@@ -382,7 +382,7 @@ export default function AquariumScene({ onCreatureClick }) {
       {/* ── Clickable creature placeholders ── */}
       <div className="creatures-layer">
         <Jellyfish     style={{ left: '50%', top: '20%'  }} />
-        <TreasureChest style={{ left: '48%', top: '72%'  }} />
+        <TreasureChest style={{ left: '48%', top: '63%'  }} />
         <Starfish      style={{ left: '74%', top: '68%'  }} />
 
         {CREATURES.map((c, i) => (

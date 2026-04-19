@@ -65,7 +65,7 @@ export default function Starfish({ style }) {
         <img
           src={`${BASE}creatures/star${frame}.png`}
           alt="Starfish"
-          width={140}
+          width={180}
           draggable={false}
           className={`star-img${hovered ? ' star-img--hovered' : ''}`}
         />
