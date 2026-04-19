@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import Jellyfish from './creatures/Jellyfish'
 import TreasureChest from './creatures/TreasureChest'
@@ -6,10 +6,10 @@ import Starfish from './creatures/Starfish'
 
 const BASE = import.meta.env.BASE_URL
 
-const FISH = [
-  { src: 'fish_school1.png', top: '28%', duration: 26, delay: 0,  width: 130 },
-  { src: 'fish_school2.png', top: '48%', duration: 34, delay: 9,  width: 110 },
-  { src: 'fish_heart.png',   top: '38%', duration: 20, delay: 14, width: 70  },
+// Two swimming schools — fish_heart is the hover crossfade target, not a swimmer
+const FISH_SCHOOLS = [
+  { src: 'fish_school1.png', top: '28%', duration: 22, delay: 0, width: 130 },
+  { src: 'fish_school2.png', top: '44%', duration: 30, delay: 8, width: 110 },
 ]
 
 // ── SVG scene data ────────────────────────────────────────────────────────────
@@ -178,6 +178,7 @@ export default function AquariumScene({ onCreatureClick }) {
   const bubbleRefs   = useRef([])
   const creatureRefs = useRef([])
   const fishRefs     = useRef([])
+  const [hoveredFish, setHoveredFish] = useState(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -246,15 +247,15 @@ export default function AquariumScene({ onCreatureClick }) {
         setTimeout(launch, Math.random() * 16000)
       })
 
-      // Background fish — drift right-to-left, loop continuously
+      // Background fish — swim left-to-right, loop continuously
       fishRefs.current.forEach((el, i) => {
         if (!el) return
-        const { duration, delay, width } = FISH[i]
+        const { duration, delay, width } = FISH_SCHOOLS[i]
         const vw = window.innerWidth
         gsap.fromTo(
           el,
-          { x: vw + width + 40 },
-          { x: -(width + 40), duration, ease: 'none', repeat: -1, delay },
+          { x: -(width + 40) },
+          { x: vw + width + 40, duration, ease: 'none', repeat: -1, delay },
         )
       })
     })
@@ -340,19 +341,34 @@ export default function AquariumScene({ onCreatureClick }) {
         ))}
       </svg>
 
-      {/* ── Background fish (ambient, not clickable) ── */}
-      <div className="fish-layer" aria-hidden="true">
-        {FISH.map((f, i) => (
-          <img
+      {/* ── Background fish — swim LTR, crossfade to heart on hover ── */}
+      <div className="fish-layer">
+        {FISH_SCHOOLS.map((f, i) => (
+          <div
             key={f.src}
             ref={el => { fishRefs.current[i] = el }}
-            src={`${BASE}creatures/${f.src}`}
-            alt=""
-            width={f.width}
-            draggable={false}
-            className="bg-fish"
+            className="fish-group"
             style={{ top: f.top }}
-          />
+            onMouseEnter={() => setHoveredFish(i)}
+            onMouseLeave={() => setHoveredFish(null)}
+          >
+            <div className="fish-flip">
+              <img
+                src={`${BASE}creatures/${f.src}`}
+                alt=""
+                width={f.width}
+                draggable={false}
+                className={`fish-school-img${hoveredFish === i ? ' fish-school-img--hidden' : ''}`}
+              />
+              <img
+                src={`${BASE}creatures/fish_heart.png`}
+                alt=""
+                width={f.width}
+                draggable={false}
+                className={`fish-heart-img${hoveredFish === i ? ' fish-heart-img--visible' : ''}`}
+              />
+            </div>
+          </div>
         ))}
       </div>
 

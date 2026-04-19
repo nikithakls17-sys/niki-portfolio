@@ -31,11 +31,42 @@
   overflow: hidden;
 }
 
-.bg-fish {
+.fish-group {
   position: absolute;
-  opacity: 0.25;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.fish-flip {
+  position: relative;
+  display: inline-block;
+  transform: scaleX(-1); /* face right for LTR swimming */
+}
+
+.fish-school-img {
+  display: block;
+  opacity: 0.7;
+  transition: opacity 0.55s ease;
+  user-select: none;
+}
+
+.fish-school-img--hidden {
+  opacity: 0;
+}
+
+.fish-heart-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.55s ease;
   pointer-events: none;
   user-select: none;
+}
+
+.fish-heart-img--visible {
+  opacity: 0.7;
 }
 
 /* ── Bubbles ──────────────────────────────────── */
