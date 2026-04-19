@@ -177,8 +177,17 @@ export default function AquariumScene({ onCreatureClick }) {
   const seaweedRefs  = useRef([])
   const bubbleRefs   = useRef([])
   const creatureRefs = useRef([])
-  const fishRefs     = useRef([])
-  const [hoveredFish, setHoveredFish] = useState(null)
+  const fishRefs      = useRef([])
+  const heartTimer    = useRef(null)
+  const [heartFish, setHeartFish] = useState(null)
+
+  function showHeart(i)  { clearTimeout(heartTimer.current); setHeartFish(i) }
+  function hideHeart()   { clearTimeout(heartTimer.current); setHeartFish(null) }
+  function clickHeart(i) {
+    clearTimeout(heartTimer.current)
+    setHeartFish(i)
+    heartTimer.current = setTimeout(() => setHeartFish(null), 2000)
+  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -341,7 +350,7 @@ export default function AquariumScene({ onCreatureClick }) {
         ))}
       </svg>
 
-      {/* ── Background fish — swim LTR, crossfade to heart on hover ── */}
+      {/* ── Background fish — swim RTL, crossfade to heart on hover/click ── */}
       <div className="fish-layer">
         {FISH_SCHOOLS.map((f, i) => (
           <div
@@ -349,8 +358,9 @@ export default function AquariumScene({ onCreatureClick }) {
             ref={el => { fishRefs.current[i] = el }}
             className="fish-group"
             style={{ top: f.top }}
-            onMouseEnter={() => setHoveredFish(i)}
-            onMouseLeave={() => setHoveredFish(null)}
+            onMouseEnter={() => showHeart(i)}
+            onMouseLeave={() => hideHeart()}
+            onClick={() => clickHeart(i)}
           >
             <div className="fish-flip">
               <img
@@ -358,14 +368,14 @@ export default function AquariumScene({ onCreatureClick }) {
                 alt=""
                 width={f.width}
                 draggable={false}
-                className={`fish-school-img${hoveredFish === i ? ' fish-school-img--hidden' : ''}`}
+                className={`fish-school-img${heartFish === i ? ' fish-school-img--hidden' : ''}`}
               />
               <img
                 src={`${BASE}creatures/fish_heart.png`}
                 alt=""
                 width={f.width}
                 draggable={false}
-                className={`fish-heart-img${hoveredFish === i ? ' fish-heart-img--visible' : ''}`}
+                className={`fish-heart-img${heartFish === i ? ' fish-heart-img--visible' : ''}`}
               />
             </div>
           </div>
@@ -382,7 +392,7 @@ export default function AquariumScene({ onCreatureClick }) {
       {/* ── Clickable creature placeholders ── */}
       <div className="creatures-layer">
         <Jellyfish     style={{ left: '50%', top: '20%'  }} />
-        <TreasureChest style={{ left: '48%', top: '63%'  }} />
+        <TreasureChest style={{ left: '48%', top: '75%'  }} />
         <Starfish      style={{ left: '74%', top: '68%'  }} />
 
         {CREATURES.map((c, i) => (

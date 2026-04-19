@@ -93,6 +93,7 @@
 .creatures-layer {
   position: absolute;
   inset: 0;
+  pointer-events: none; /* let fish-layer below receive events; children opt back in */
 }
 
 .creature-btn {
@@ -101,6 +102,7 @@
   background: none;
   border: none;
   cursor: pointer;
+  pointer-events: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,6 +165,7 @@
   position: absolute;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -196,6 +199,7 @@
   position: absolute;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -229,6 +233,7 @@
   position: absolute;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
 }
