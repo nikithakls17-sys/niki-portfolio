@@ -4,7 +4,7 @@ const NAV_ITEMS = [
   { icon: '🪼', label: 'Projects',      path: '/projects'     },
   { icon: '⭐', label: 'Skills',         path: '/skills'       },
   { icon: '📦', label: "Author's Note", path: '/about'        },
-  { icon: '🦀', label: 'Certificates',  path: '/certificates' },
+  { icon: '🐢', label: 'Certificates',  path: '/certificates' },
   { icon: '🐡', label: 'Hobbies',       path: '/hobbies'      },
 ]
 

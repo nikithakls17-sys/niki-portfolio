@@ -265,6 +265,60 @@
     drop-shadow(0 0 8px rgba(255, 220, 160, 0.55));
 }
 
+/* ── Puffer Fish ──────────────────────────────── */
+.puffer-pos {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.puffer-tooltip {
+  color: rgba(140, 220, 255, 0.95);
+  text-shadow: 0 0 12px rgba(60, 160, 220, 0.9), 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+/* ── Turtle ───────────────────────────────────── */
+.turtle-pos {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.turtle-tooltip {
+  color: rgba(160, 255, 200, 0.95);
+  text-shadow: 0 0 12px rgba(40, 180, 100, 0.9), 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+/* ── Seaweed click area ───────────────────────── */
+.seaweed-click-area {
+  position: absolute;
+  background: transparent;
+  border: none;
+  pointer-events: auto;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.seaweed-tooltip {
+  color: rgba(80, 230, 140, 0.95);
+  text-shadow: 0 0 12px rgba(40, 200, 100, 0.9), 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.seaweed-glow {
+  filter:
+    drop-shadow(0 0 6px rgba(46, 204, 113, 0.8))
+    drop-shadow(0 0 14px rgba(46, 204, 113, 0.5));
+}
+
 /* ── Mute button ──────────────────────────────── */
 .mute-btn {
   position: fixed;

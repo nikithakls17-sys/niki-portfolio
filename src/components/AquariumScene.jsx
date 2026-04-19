@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import useSound from 'use-sound'
 import Jellyfish from './creatures/Jellyfish'
 import TreasureChest from './creatures/TreasureChest'
 import Starfish from './creatures/Starfish'
+import PufferFish from './creatures/PufferFish'
+import Turtle from './creatures/Turtle'
 import { useSoundCtx } from '../contexts/SoundContext'
 
 const BASE = import.meta.env.BASE_URL
@@ -165,16 +168,15 @@ const SEAWEED_RIGHT = [
   { color: '#0a4830', width: 5, d: 'M 1216,900 C 1224,882 1210,862 1222,842 C 1234,822 1216,804 1228,784 C 1240,764 1224,748 1234,730' },
 ]
 
-// Remaining emoji-placeholder creatures (starfish + treasure are now real components)
+// Remaining emoji-placeholder creatures
 const CREATURES = [
-  { id: 'puffer',   label: 'Hobbies',       icon: '🐡', x: '72%', y: '22%' },
-  { id: 'seahorse', label: 'Connect',       icon: '🌿', x: '84%', y: '50%' },
-  { id: 'crab',     label: 'Certificates', icon: '🦀', x: '18%', y: '66%' },
+  { id: 'seahorse', label: 'Connect', icon: '🌿', x: '84%', y: '50%' },
 ]
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function AquariumScene({ onCreatureClick }) {
+  const navigate = useNavigate()
   const godRayRef    = useRef(null)
   const seaweedRefs  = useRef([])
   const bubbleRefs   = useRef([])
@@ -183,6 +185,7 @@ export default function AquariumScene({ onCreatureClick }) {
   const fishTweens    = useRef([])
   const heartTimer    = useRef(null)
   const [heartFish, setHeartFish] = useState(null)
+  const [seaweedGlowing, setSeaweedGlowing] = useState(false)
 
   const { soundEnabled } = useSoundCtx()
   const ambientStarted = useRef(false)
@@ -193,8 +196,6 @@ export default function AquariumScene({ onCreatureClick }) {
     { loop: true, volume: 0.3, interrupt: false },
   )
   const [playCartoonBubble] = useSound(`${BASE}sounds/cartoon bubble.wav`, { volume: 0.6, interrupt: true })
-  const [playBubbleDeepCrab]   = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.7, interrupt: true })
-  const [playBubbleDeepPuffer] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
 
   // Start ambient on first user click anywhere
   useEffect(() => {
@@ -388,10 +389,10 @@ export default function AquariumScene({ onCreatureClick }) {
 
         {/* Left seaweed */}
         {SEAWEED_LEFT.map((sw, i) => (
-          <g key={`sl-${i}`} ref={el => { seaweedRefs.current[i] = el }}>
+          <g key={`sl-${i}`} ref={el => { seaweedRefs.current[i] = el }} className={seaweedGlowing ? 'seaweed-glow' : ''}>
             <path
               d={sw.d}
-              stroke={sw.color}
+              stroke={seaweedGlowing ? '#2ecc71' : sw.color}
               strokeWidth={sw.width}
               strokeLinecap="round"
               fill="none"
@@ -457,6 +458,22 @@ export default function AquariumScene({ onCreatureClick }) {
         <Jellyfish     style={{ left: '50%', top: '20%'  }} />
         <TreasureChest style={{ left: '10%', bottom: '12%', transform: 'translateX(-50%)' }} />
         <Starfish      style={{ left: '74%', top: '68%'  }} />
+        <PufferFish    style={{ left: '75%', top: '40%'  }} />
+        <Turtle        style={{ left: '12%', top: '70%'  }} />
+
+        {/* Seaweed click area — left seaweed column */}
+        <button
+          className="seaweed-click-area"
+          style={{ left: '0%', top: '40%', width: '14%', height: '55%' }}
+          onClick={() => navigate('/hobbies')}
+          onMouseEnter={() => setSeaweedGlowing(true)}
+          onMouseLeave={() => setSeaweedGlowing(false)}
+          aria-label="Go to Hobbies"
+        >
+          <span className={`creature-tooltip seaweed-tooltip${seaweedGlowing ? ' creature-tooltip--visible' : ''}`}>
+            Hobbies
+          </span>
+        </button>
 
         {CREATURES.map((c, i) => (
           <button
@@ -464,13 +481,7 @@ export default function AquariumScene({ onCreatureClick }) {
             ref={el => { creatureRefs.current[i] = el }}
             className="creature-btn"
             style={{ left: c.x, top: c.y }}
-            onClick={() => {
-              if (soundEnabled) {
-                if (c.id === 'crab')   playBubbleDeepCrab()
-                if (c.id === 'puffer') playBubbleDeepPuffer()
-              }
-              onCreatureClick?.(c.id)
-            }}
+            onClick={() => onCreatureClick?.(c.id)}
             aria-label={`Go to ${c.label}`}
           >
             <span className="creature-icon">{c.icon}</span>
