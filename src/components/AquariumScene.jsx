@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import useSound from 'use-sound'
 import Jellyfish from './creatures/Jellyfish'
 import TreasureChest from './creatures/TreasureChest'
 import Starfish from './creatures/Starfish'
+import { useSoundCtx } from '../contexts/SoundContext'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -182,11 +184,51 @@ export default function AquariumScene({ onCreatureClick }) {
   const heartTimer    = useRef(null)
   const [heartFish, setHeartFish] = useState(null)
 
+  const { soundEnabled } = useSoundCtx()
+  const ambientStarted = useRef(false)
+  const ambientPlaying = useRef(false)
+
+  const [playAmbient, { stop: stopAmbient }] = useSound(
+    `${BASE}sounds/underwater background.mp3`,
+    { loop: true, volume: 0.3, interrupt: false },
+  )
+  const [playCartoonBubble] = useSound(`${BASE}sounds/cartoon bubble.wav`, { volume: 0.6, interrupt: true })
+  const [playBubbleDeepCrab]   = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.7, interrupt: true })
+  const [playBubbleDeepPuffer] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
+
+  // Start ambient on first user click anywhere
+  useEffect(() => {
+    function onFirstInteraction() {
+      if (ambientStarted.current) return
+      ambientStarted.current = true
+      if (soundEnabled) {
+        playAmbient()
+        ambientPlaying.current = true
+      }
+      document.removeEventListener('click', onFirstInteraction)
+    }
+    document.addEventListener('click', onFirstInteraction)
+    return () => document.removeEventListener('click', onFirstInteraction)
+  }, [soundEnabled, playAmbient])
+
+  // Respond to mute/unmute after ambient has started
+  useEffect(() => {
+    if (!ambientStarted.current) return
+    if (soundEnabled && !ambientPlaying.current) {
+      playAmbient()
+      ambientPlaying.current = true
+    } else if (!soundEnabled && ambientPlaying.current) {
+      stopAmbient()
+      ambientPlaying.current = false
+    }
+  }, [soundEnabled, playAmbient, stopAmbient])
+
   function showHeart(i) {
     clearTimeout(heartTimer.current)
     fishTweens.current[i]?.pause()
     gsap.to(fishRefs.current[i], { opacity: 1, duration: 0.2 })
     setHeartFish(i)
+    if (soundEnabled) playCartoonBubble()
   }
 
   function hideHeart(i) {
@@ -201,6 +243,7 @@ export default function AquariumScene({ onCreatureClick }) {
     fishTweens.current[i]?.pause()
     gsap.to(fishRefs.current[i], { opacity: 1, duration: 0.2 })
     setHeartFish(i)
+    if (soundEnabled) playCartoonBubble()
     heartTimer.current = setTimeout(() => {
       fishTweens.current[i]?.resume()
       gsap.to(fishRefs.current[i], { opacity: 0.85, duration: 0.3 })
@@ -421,7 +464,13 @@ export default function AquariumScene({ onCreatureClick }) {
             ref={el => { creatureRefs.current[i] = el }}
             className="creature-btn"
             style={{ left: c.x, top: c.y }}
-            onClick={() => onCreatureClick?.(c.id)}
+            onClick={() => {
+              if (soundEnabled) {
+                if (c.id === 'crab')   playBubbleDeepCrab()
+                if (c.id === 'puffer') playBubbleDeepPuffer()
+              }
+              onCreatureClick?.(c.id)
+            }}
             aria-label={`Go to ${c.label}`}
           >
             <span className="creature-icon">{c.icon}</span>

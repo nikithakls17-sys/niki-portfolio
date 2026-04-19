@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
+import { SoundProvider } from './contexts/SoundContext'
 import AquariumScene from './components/AquariumScene'
 import SideNav from './components/SideNav'
+import MuteButton from './components/MuteButton'
 import Projects from './pages/Projects'
 import Skills from './pages/Skills'
 import About from './pages/About'
@@ -35,16 +37,19 @@ function Home() {
 
 export default function App() {
   return (
-    <HashRouter>
-      <SideNav />
-      <Routes>
+    <SoundProvider>
+      <HashRouter>
+        <MuteButton />
+        <SideNav />
+        <Routes>
         <Route path="/"             element={<Home />}         />
         <Route path="/projects"     element={<Projects />}     />
         <Route path="/skills"       element={<Skills />}       />
         <Route path="/about"        element={<About />}        />
         <Route path="/certificates" element={<Certificates />} />
         <Route path="/hobbies"      element={<Hobbies />}      />
-      </Routes>
-    </HashRouter>
+        </Routes>
+      </HashRouter>
+    </SoundProvider>
   )
 }

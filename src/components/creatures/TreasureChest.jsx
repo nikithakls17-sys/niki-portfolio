@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
+import useSound from 'use-sound'
+import { useSoundCtx } from '../../contexts/SoundContext'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -10,6 +12,10 @@ export default function TreasureChest({ style }) {
   const animRef = useRef(null)
   const navigate = useNavigate()
   const clickedRef = useRef(false)
+  const { soundEnabled } = useSoundCtx()
+
+  const [playHover] = useSound(`${BASE}sounds/treasure.wav`, { volume: 0.7, interrupt: true })
+  const [playClick] = useSound(`${BASE}sounds/treasure.wav`, { volume: 1.0, interrupt: true })
 
   // gentle bob
   useEffect(() => {
@@ -21,9 +27,15 @@ export default function TreasureChest({ style }) {
     return () => ctx.revert()
   }, [])
 
+  function handleHoverEnter() {
+    setOpen(true)
+    if (soundEnabled) playHover()
+  }
+
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
+    if (soundEnabled) playClick()
     gsap.to(posRef.current, {
       scale: 1.25,
       duration: 0.18,
@@ -40,7 +52,7 @@ export default function TreasureChest({ style }) {
       className="treasure-pos"
       style={style}
       onClick={handleClick}
-      onMouseEnter={() => setOpen(true)}
+      onMouseEnter={handleHoverEnter}
       onMouseLeave={() => setOpen(false)}
       role="button"
       aria-label="Go to Author's Note"

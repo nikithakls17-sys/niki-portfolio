@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
+import useSound from 'use-sound'
+import { useSoundCtx } from '../../contexts/SoundContext'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -11,6 +13,10 @@ export default function Starfish({ style }) {
   const animRef = useRef(null)
   const navigate = useNavigate()
   const clickedRef = useRef(false)
+  const { soundEnabled } = useSoundCtx()
+
+  const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
+  const [playClick] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.8, interrupt: true })
 
   // 3-frame flipbook every 800ms
   useEffect(() => {
@@ -32,9 +38,15 @@ export default function Starfish({ style }) {
     return () => ctx.revert()
   }, [])
 
+  function handleHoverEnter() {
+    setHovered(true)
+    if (soundEnabled) playHover()
+  }
+
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
+    if (soundEnabled) playClick()
     gsap.killTweensOf(animRef.current)
     gsap.to(posRef.current, {
       rotation: 360,
@@ -51,7 +63,7 @@ export default function Starfish({ style }) {
       className="star-pos"
       style={style}
       onClick={handleClick}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={handleHoverEnter}
       onMouseLeave={() => setHovered(false)}
       role="button"
       aria-label="Go to Skills"
