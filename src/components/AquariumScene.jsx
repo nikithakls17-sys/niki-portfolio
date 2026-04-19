@@ -283,8 +283,8 @@ export default function AquariumScene({ onCreatureClick }) {
         gsap.set(el, { opacity: 0.85 })
         fishTweens.current[i] = gsap.fromTo(
           el,
-          { x: -(width + 40) },
-          { x: vw + width + 40, duration, ease: 'none', repeat: -1, delay },
+          { x: vw + width + 40 },
+          { x: -(width + 40), duration, ease: 'none', repeat: -1, delay },
         )
       })
     })
