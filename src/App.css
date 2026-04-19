@@ -40,13 +40,12 @@
 .fish-flip {
   position: relative;
   display: inline-block;
-  transform: scaleX(-1); /* face right for LTR swimming */
 }
 
 .fish-school-img {
   display: block;
-  opacity: 0.7;
-  transition: opacity 0.55s ease;
+  opacity: 0.75;
+  transition: opacity 0.5s ease;
   user-select: none;
 }
 
@@ -60,13 +59,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: opacity 0.55s ease;
+  transition: opacity 0.5s ease, filter 0.5s ease;
   pointer-events: none;
   user-select: none;
 }
 
 .fish-heart-img--visible {
-  opacity: 0.7;
+  opacity: 0.75;
+  filter: drop-shadow(0 0 14px rgba(255, 150, 190, 0.85)) drop-shadow(0 0 6px rgba(255, 200, 220, 0.6));
 }
 
 /* ── Bubbles ──────────────────────────────────── */

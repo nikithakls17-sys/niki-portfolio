@@ -8,8 +8,8 @@ const BASE = import.meta.env.BASE_URL
 
 // Two swimming schools — fish_heart is the hover crossfade target, not a swimmer
 const FISH_SCHOOLS = [
-  { src: 'fish_school1.png', top: '28%', duration: 22, delay: 0, width: 130 },
-  { src: 'fish_school2.png', top: '44%', duration: 30, delay: 8, width: 110 },
+  { src: 'fish_school1.png', top: '28%', duration: 22, delay: 0, width: 300 },
+  { src: 'fish_school2.png', top: '44%', duration: 30, delay: 8, width: 300 },
 ]
 
 // ── SVG scene data ────────────────────────────────────────────────────────────
@@ -247,15 +247,15 @@ export default function AquariumScene({ onCreatureClick }) {
         setTimeout(launch, Math.random() * 16000)
       })
 
-      // Background fish — swim left-to-right, loop continuously
+      // Background fish — swim right-to-left, loop continuously
       fishRefs.current.forEach((el, i) => {
         if (!el) return
         const { duration, delay, width } = FISH_SCHOOLS[i]
         const vw = window.innerWidth
         gsap.fromTo(
           el,
-          { x: -(width + 40) },
-          { x: vw + width + 40, duration, ease: 'none', repeat: -1, delay },
+          { x: vw + width + 40 },
+          { x: -(width + 40), duration, ease: 'none', repeat: -1, delay },
         )
       })
     })
