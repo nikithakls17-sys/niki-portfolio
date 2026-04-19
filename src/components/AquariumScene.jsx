@@ -1,6 +1,16 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import Jellyfish from './creatures/Jellyfish'
+import TreasureChest from './creatures/TreasureChest'
+import Starfish from './creatures/Starfish'
+
+const BASE = import.meta.env.BASE_URL
+
+const FISH = [
+  { src: 'fish_school1.png', top: '28%', duration: 26, delay: 0,  width: 130 },
+  { src: 'fish_school2.png', top: '48%', duration: 34, delay: 9,  width: 110 },
+  { src: 'fish_heart.png',   top: '38%', duration: 20, delay: 14, width: 70  },
+]
 
 // ── SVG scene data ────────────────────────────────────────────────────────────
 
@@ -153,13 +163,11 @@ const SEAWEED_RIGHT = [
   { color: '#0a4830', width: 5, d: 'M 1216,900 C 1224,882 1210,862 1222,842 C 1234,822 1216,804 1228,784 C 1240,764 1224,748 1234,730' },
 ]
 
-// Creature placeholder definitions — positions as % of viewport
+// Remaining emoji-placeholder creatures (starfish + treasure are now real components)
 const CREATURES = [
-  { id: 'puffer',   label: 'Hobbies',       icon: '🐡', x: '68%', y: '22%' },
-  { id: 'starfish', label: 'Skills',        icon: '⭐', x: '62%', y: '54%' },
-  { id: 'seahorse', label: 'Connect',       icon: '🌿', x: '80%', y: '52%' },
-  { id: 'crab',     label: 'Certificates', icon: '🦀', x: '20%', y: '66%' },
-  { id: 'treasure', label: "Author's Note", icon: '📦', x: '48%', y: '70%' },
+  { id: 'puffer',   label: 'Hobbies',       icon: '🐡', x: '72%', y: '22%' },
+  { id: 'seahorse', label: 'Connect',       icon: '🌿', x: '84%', y: '50%' },
+  { id: 'crab',     label: 'Certificates', icon: '🦀', x: '18%', y: '66%' },
 ]
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -169,6 +177,7 @@ export default function AquariumScene({ onCreatureClick }) {
   const seaweedRefs  = useRef([])
   const bubbleRefs   = useRef([])
   const creatureRefs = useRef([])
+  const fishRefs     = useRef([])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -235,6 +244,18 @@ export default function AquariumScene({ onCreatureClick }) {
 
         // Stagger bubble launches so they don't all appear at once
         setTimeout(launch, Math.random() * 16000)
+      })
+
+      // Background fish — drift right-to-left, loop continuously
+      fishRefs.current.forEach((el, i) => {
+        if (!el) return
+        const { duration, delay, width } = FISH[i]
+        const vw = window.innerWidth
+        gsap.fromTo(
+          el,
+          { x: vw + width + 40 },
+          { x: -(width + 40), duration, ease: 'none', repeat: -1, delay },
+        )
       })
     })
 
@@ -319,6 +340,22 @@ export default function AquariumScene({ onCreatureClick }) {
         ))}
       </svg>
 
+      {/* ── Background fish (ambient, not clickable) ── */}
+      <div className="fish-layer" aria-hidden="true">
+        {FISH.map((f, i) => (
+          <img
+            key={f.src}
+            ref={el => { fishRefs.current[i] = el }}
+            src={`${BASE}creatures/${f.src}`}
+            alt=""
+            width={f.width}
+            draggable={false}
+            className="bg-fish"
+            style={{ top: f.top }}
+          />
+        ))}
+      </div>
+
       {/* ── Bubble particles ── */}
       <div className="bubbles-container" aria-hidden="true">
         {Array.from({ length: 30 }).map((_, i) => (
@@ -328,8 +365,9 @@ export default function AquariumScene({ onCreatureClick }) {
 
       {/* ── Clickable creature placeholders ── */}
       <div className="creatures-layer">
-        {/* Jellyfish — hand-drawn, navigates to /projects */}
-        <Jellyfish style={{ left: '50%', top: '20%' }} />
+        <Jellyfish     style={{ left: '50%', top: '20%'  }} />
+        <TreasureChest style={{ left: '48%', top: '72%'  }} />
+        <Starfish      style={{ left: '74%', top: '68%'  }} />
 
         {CREATURES.map((c, i) => (
           <button

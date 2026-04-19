@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import AquariumScene from './components/AquariumScene'
+import SideNav from './components/SideNav'
 import Projects from './pages/Projects'
+import Skills from './pages/Skills'
+import About from './pages/About'
 import './App.css'
 
 const SECTION_LABELS = {
-  starfish: 'Skills & Technologies',
-  crab:     'Certificates & Academics',
-  treasure: "Author's Note",
   puffer:   'Hobbies & Interests',
   seahorse: 'Connect',
+  crab:     'Certificates & Academics',
 }
 
 function Home() {
@@ -18,7 +19,6 @@ function Home() {
   return (
     <>
       <AquariumScene onCreatureClick={setActiveSection} />
-
       {activeSection && (
         <div className="section-overlay">
           <h2>{SECTION_LABELS[activeSection] ?? activeSection}</h2>
@@ -34,9 +34,12 @@ function Home() {
 export default function App() {
   return (
     <HashRouter>
+      <SideNav />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/"        element={<Home />}     />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/skills"   element={<Skills />}   />
+        <Route path="/about"    element={<About />}    />
       </Routes>
     </HashRouter>
   )
