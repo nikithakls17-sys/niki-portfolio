@@ -178,15 +178,34 @@ export default function AquariumScene({ onCreatureClick }) {
   const bubbleRefs   = useRef([])
   const creatureRefs = useRef([])
   const fishRefs      = useRef([])
+  const fishTweens    = useRef([])
   const heartTimer    = useRef(null)
   const [heartFish, setHeartFish] = useState(null)
 
-  function showHeart(i)  { clearTimeout(heartTimer.current); setHeartFish(i) }
-  function hideHeart()   { clearTimeout(heartTimer.current); setHeartFish(null) }
+  function showHeart(i) {
+    clearTimeout(heartTimer.current)
+    fishTweens.current[i]?.pause()
+    gsap.to(fishRefs.current[i], { opacity: 1, duration: 0.2 })
+    setHeartFish(i)
+  }
+
+  function hideHeart(i) {
+    clearTimeout(heartTimer.current)
+    fishTweens.current[i]?.resume()
+    gsap.to(fishRefs.current[i], { opacity: 0.85, duration: 0.3 })
+    setHeartFish(null)
+  }
+
   function clickHeart(i) {
     clearTimeout(heartTimer.current)
+    fishTweens.current[i]?.pause()
+    gsap.to(fishRefs.current[i], { opacity: 1, duration: 0.2 })
     setHeartFish(i)
-    heartTimer.current = setTimeout(() => setHeartFish(null), 2000)
+    heartTimer.current = setTimeout(() => {
+      fishTweens.current[i]?.resume()
+      gsap.to(fishRefs.current[i], { opacity: 0.85, duration: 0.3 })
+      setHeartFish(null)
+    }, 2000)
   }
 
   useEffect(() => {
@@ -256,15 +275,16 @@ export default function AquariumScene({ onCreatureClick }) {
         setTimeout(launch, Math.random() * 16000)
       })
 
-      // Background fish — swim right-to-left, loop continuously
+      // Background fish — swim left-to-right, loop continuously
       fishRefs.current.forEach((el, i) => {
         if (!el) return
         const { duration, delay, width } = FISH_SCHOOLS[i]
         const vw = window.innerWidth
-        gsap.fromTo(
+        gsap.set(el, { opacity: 0.85 })
+        fishTweens.current[i] = gsap.fromTo(
           el,
-          { x: vw + width + 40 },
-          { x: -(width + 40), duration, ease: 'none', repeat: -1, delay },
+          { x: -(width + 40) },
+          { x: vw + width + 40, duration, ease: 'none', repeat: -1, delay },
         )
       })
     })
@@ -359,7 +379,7 @@ export default function AquariumScene({ onCreatureClick }) {
             className="fish-group"
             style={{ top: f.top }}
             onMouseEnter={() => showHeart(i)}
-            onMouseLeave={() => hideHeart()}
+            onMouseLeave={() => hideHeart(i)}
             onClick={() => clickHeart(i)}
           >
             <div className="fish-flip">
@@ -392,7 +412,7 @@ export default function AquariumScene({ onCreatureClick }) {
       {/* ── Clickable creature placeholders ── */}
       <div className="creatures-layer">
         <Jellyfish     style={{ left: '50%', top: '20%'  }} />
-        <TreasureChest style={{ left: '48%', top: '75%'  }} />
+        <TreasureChest style={{ left: '10%', bottom: '12%', transform: 'translateX(-50%)' }} />
         <Starfish      style={{ left: '74%', top: '68%'  }} />
 
         {CREATURES.map((c, i) => (
