@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap');
+
 /* ── Aquarium scene ─────────────────────────────── */
 .aquarium-scene {
   position: fixed;
@@ -341,8 +343,31 @@
       #030912 100%
     );
   display: flex;
+  flex-direction: column;
   align-items: center;
+  overflow-y: auto;
+}
+
+.ocean-page--center {
   justify-content: center;
+}
+
+/* scrollable page shell with right gutter for SideNav */
+.content-shell {
+  width: 100%;
+  max-width: 1080px;
+  padding: 52px 110px 80px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .page-content {
@@ -353,7 +378,7 @@
 }
 
 .page-title {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 200;
   letter-spacing: 6px;
   text-transform: uppercase;
@@ -370,6 +395,232 @@
   letter-spacing: 1.5px;
   color: rgba(140, 200, 240, 0.6);
   margin: 0;
+}
+
+/* ── Project cards ────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+  width: 100%;
+}
+
+.project-card {
+  background: rgba(6, 22, 40, 0.72);
+  border: 1px solid rgba(60, 160, 220, 0.2);
+  border-radius: 16px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.project-card:hover {
+  border-color: rgba(80, 200, 255, 0.45);
+  box-shadow: 0 0 28px rgba(60, 180, 255, 0.1);
+}
+
+.project-card__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: rgba(200, 240, 255, 0.95);
+  margin: 0;
+}
+
+.project-card__desc {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: rgba(150, 210, 240, 0.75);
+  margin: 0;
+  flex: 1;
+}
+
+.project-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tech-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  background: rgba(64, 190, 210, 0.12);
+  border: 1px solid rgba(64, 190, 210, 0.35);
+  color: rgba(120, 220, 240, 0.9);
+}
+
+.github-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  border-radius: 20px;
+  background: rgba(80, 180, 255, 0.1);
+  border: 1px solid rgba(80, 180, 255, 0.32);
+  color: rgba(180, 230, 255, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.4px;
+  transition: background 0.2s, border-color 0.2s;
+  margin-top: auto;
+}
+
+.github-btn:hover {
+  background: rgba(80, 180, 255, 0.2);
+  border-color: rgba(80, 180, 255, 0.6);
+}
+
+/* ── Skills ───────────────────────────────────── */
+.skills-container {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+}
+
+.skill-group__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.skill-group__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-pill {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 40px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  border: 1px solid;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.skill-pill:hover {
+  transform: translateY(-2px);
+}
+
+/* ── About / parchment card ───────────────────── */
+.parchment-card {
+  max-width: 620px;
+  width: 90%;
+  background: rgba(252, 244, 218, 0.96);
+  border: 2px solid rgba(180, 145, 80, 0.35);
+  border-radius: 12px;
+  padding: 48px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow:
+    0 0 60px rgba(200, 160, 60, 0.15),
+    inset 0 0 30px rgba(200, 170, 100, 0.08);
+  font-family: 'Caveat', cursive;
+  margin: 40px 0;
+}
+
+.parchment-deco {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: -8px;
+}
+
+.parchment-text {
+  font-size: 1.25rem;
+  line-height: 1.75;
+  color: #3d2b1a;
+  margin: 0;
+}
+
+.parchment-text--closing {
+  font-size: 1.15rem;
+  color: #5a3e28;
+  font-style: italic;
+}
+
+.parchment-name {
+  font-weight: 700;
+  color: #2a1a0e;
+}
+
+.parchment-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(160, 120, 60, 0.4), transparent);
+  margin: 4px 0;
+}
+
+.parchment-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.parchment-uni {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4a3020;
+}
+
+.parchment-major {
+  font-size: 0.95rem;
+  color: #6a4a30;
+}
+
+.parchment-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.parchment-link {
+  display: inline-block;
+  padding: 7px 22px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.parchment-link:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+.parchment-link--linkedin {
+  background: rgba(10, 102, 194, 0.15);
+  border: 1px solid rgba(10, 102, 194, 0.4);
+  color: #1a5a8a;
+}
+
+.parchment-link--github {
+  background: rgba(40, 40, 40, 0.1);
+  border: 1px solid rgba(40, 40, 40, 0.25);
+  color: #3a2a1a;
+}
+
+.parchment-back {
+  align-self: center;
+  margin-top: 4px;
+  font-family: inherit;
+  font-size: 1rem;
 }
 
 /* ── Section overlay ──────────────────────────── */

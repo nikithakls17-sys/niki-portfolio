@@ -5,6 +5,8 @@ import SideNav from './components/SideNav'
 import Projects from './pages/Projects'
 import Skills from './pages/Skills'
 import About from './pages/About'
+import Certificates from './pages/Certificates'
+import Hobbies from './pages/Hobbies'
 import './App.css'
 
 const SECTION_LABELS = {
@@ -36,10 +38,12 @@ export default function App() {
     <HashRouter>
       <SideNav />
       <Routes>
-        <Route path="/"        element={<Home />}     />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/skills"   element={<Skills />}   />
-        <Route path="/about"    element={<About />}    />
+        <Route path="/"             element={<Home />}         />
+        <Route path="/projects"     element={<Projects />}     />
+        <Route path="/skills"       element={<Skills />}       />
+        <Route path="/about"        element={<About />}        />
+        <Route path="/certificates" element={<Certificates />} />
+        <Route path="/hobbies"      element={<Hobbies />}      />
       </Routes>
     </HashRouter>
   )
