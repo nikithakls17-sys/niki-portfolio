@@ -10,7 +10,7 @@ export default function Turtle({ style }) {
   const [isRevealed, setIsRevealed] = useState(false)
   const [hovered, setHovered] = useState(false)
   const posRef     = useRef(null)
-  const animRef    = useRef(null)
+  const containerRef = useRef(null)
   const clickedRef = useRef(false)
   const navigate   = useNavigate()
   const { isSfxMuted } = useSoundCtx()
@@ -18,12 +18,14 @@ export default function Turtle({ style }) {
   const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
 
   useEffect(() => {
-    const el = animRef.current
-    if (!el) return
-    const ctx = gsap.context(() => {
-      gsap.to(el, { y: -12, duration: 2.5, repeat: -1, yoyo: true, ease: 'sine.inOut' })
-    }, el)
-    return () => ctx.revert()
+    const tween = gsap.to(containerRef.current, {
+      y: -15,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    })
+    return () => tween.kill()
   }, [])
 
   function handleMouseEnter() {
@@ -66,7 +68,7 @@ export default function Turtle({ style }) {
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
-      <div ref={animRef}>
+      <div ref={containerRef}>
         <span className={`creature-tooltip turtle-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>
           Certificates
         </span>

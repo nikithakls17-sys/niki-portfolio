@@ -11,12 +11,24 @@ const BIG   = 220
 
 export default function PufferFish({ style }) {
   const [isPuffed, setIsPuffed] = useState(false)
+  const containerRef = useRef(null)
   const swimRef    = useRef(null)
   const clickedRef = useRef(false)
   const navigate   = useNavigate()
   const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
+
+  useEffect(() => {
+    const tween = gsap.to(containerRef.current, {
+      y: -10,
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    })
+    return () => tween.kill()
+  }, [])
 
   // Gentle left-right swim on the swim wrapper
   useEffect(() => {
@@ -49,6 +61,7 @@ export default function PufferFish({ style }) {
 
   return (
     <div
+      ref={containerRef}
       className="puffer-pos"
       style={style}
       onClick={handleClick}
