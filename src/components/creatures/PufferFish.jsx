@@ -21,7 +21,17 @@ export default function PufferFish({ style }) {
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
 
   function startInterval() {
-    intervalRef.current = setInterval(() => setFrame(f => (f === 1 ? 2 : 1)), 1500)
+    let growing = true
+    intervalRef.current = setInterval(() => {
+      if (growing) {
+        setFrame(1)
+        setIsPuffed(true)
+      } else {
+        setFrame(2)
+        setIsPuffed(false)
+      }
+      growing = !growing
+    }, 3000)
   }
 
   function stopInterval() {
@@ -40,7 +50,7 @@ export default function PufferFish({ style }) {
       gsap.fromTo(
         el,
         { rotation: -5, transformOrigin: '50% 90%' },
-        { rotation: 5, duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: -1 },
+        { rotation: 5, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 },
       )
     }, el)
     return () => ctx.revert()
