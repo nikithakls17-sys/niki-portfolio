@@ -12,6 +12,7 @@ const BIG   = 220
 export default function PufferFish({ style }) {
   const [frame, setFrame] = useState(2)
   const [isPuffed, setIsPuffed] = useState(false)
+  const [isIdleBig, setIsIdleBig] = useState(false)
   const animRef     = useRef(null)
   const intervalRef = useRef(null)
   const clickedRef  = useRef(false)
@@ -25,10 +26,10 @@ export default function PufferFish({ style }) {
     intervalRef.current = setInterval(() => {
       if (growing) {
         setFrame(1)
-        setIsPuffed(true)
+        setIsIdleBig(true)
       } else {
         setFrame(2)
-        setIsPuffed(false)
+        setIsIdleBig(false)
       }
       growing = !growing
     }, 3000)
@@ -78,7 +79,7 @@ export default function PufferFish({ style }) {
     setTimeout(() => navigate('/hobbies'), 400)
   }
 
-  const size = isPuffed ? BIG : SMALL
+  const size = isPuffed ? BIG : (isIdleBig ? BIG : SMALL)
 
   return (
     <div
