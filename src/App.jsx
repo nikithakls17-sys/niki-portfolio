@@ -2,20 +2,13 @@ import { useState } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { SoundProvider } from './contexts/SoundContext'
 import AquariumScene from './components/AquariumScene'
-import SideNav from './components/SideNav'
-import MuteButton from './components/MuteButton'
+import HamburgerMenu from './components/HamburgerMenu'
 import Projects from './pages/Projects'
 import Skills from './pages/Skills'
 import About from './pages/About'
 import Certificates from './pages/Certificates'
 import Hobbies from './pages/Hobbies'
 import './App.css'
-
-const SECTION_LABELS = {
-  puffer:   'Hobbies & Interests',
-  seahorse: 'Connect',
-  crab:     'Certificates & Academics',
-}
 
 function Home() {
   const [activeSection, setActiveSection] = useState(null)
@@ -25,7 +18,6 @@ function Home() {
       <AquariumScene onCreatureClick={setActiveSection} />
       {activeSection && (
         <div className="section-overlay">
-          <h2>{SECTION_LABELS[activeSection] ?? activeSection}</h2>
           <button className="back-btn" onClick={() => setActiveSection(null)}>
             ← Back to the Ocean
           </button>
@@ -39,15 +31,14 @@ export default function App() {
   return (
     <SoundProvider>
       <HashRouter>
-        <MuteButton />
-        <SideNav />
+        <HamburgerMenu />
         <Routes>
-        <Route path="/"             element={<Home />}         />
-        <Route path="/projects"     element={<Projects />}     />
-        <Route path="/skills"       element={<Skills />}       />
-        <Route path="/about"        element={<About />}        />
-        <Route path="/certificates" element={<Certificates />} />
-        <Route path="/hobbies"      element={<Hobbies />}      />
+          <Route path="/"             element={<Home />}         />
+          <Route path="/projects"     element={<Projects />}     />
+          <Route path="/skills"       element={<Skills />}       />
+          <Route path="/about"        element={<About />}        />
+          <Route path="/certificates" element={<Certificates />} />
+          <Route path="/hobbies"      element={<Hobbies />}      />
         </Routes>
       </HashRouter>
     </SoundProvider>

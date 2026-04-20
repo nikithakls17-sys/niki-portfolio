@@ -189,40 +189,24 @@ export default function AquariumScene({ onCreatureClick }) {
 
   const { soundEnabled } = useSoundCtx()
   const ambientStarted = useRef(false)
-  const ambientPlaying = useRef(false)
 
-  const [playAmbient, { stop: stopAmbient }] = useSound(
+  const [playAmbient] = useSound(
     `${BASE}sounds/underwater background.mp3`,
     { loop: true, volume: 0.3, interrupt: false },
   )
   const [playCartoonBubble] = useSound(`${BASE}sounds/cartoon bubble.wav`, { volume: 0.6, interrupt: true })
 
-  // Start ambient on first user click anywhere
+  // Start ambient on first user interaction — Howler.mute/volume handle the rest
   useEffect(() => {
     function onFirstInteraction() {
       if (ambientStarted.current) return
       ambientStarted.current = true
-      if (soundEnabled) {
-        playAmbient()
-        ambientPlaying.current = true
-      }
+      playAmbient()
       document.removeEventListener('click', onFirstInteraction)
     }
     document.addEventListener('click', onFirstInteraction)
     return () => document.removeEventListener('click', onFirstInteraction)
-  }, [soundEnabled, playAmbient])
-
-  // Respond to mute/unmute after ambient has started
-  useEffect(() => {
-    if (!ambientStarted.current) return
-    if (soundEnabled && !ambientPlaying.current) {
-      playAmbient()
-      ambientPlaying.current = true
-    } else if (!soundEnabled && ambientPlaying.current) {
-      stopAmbient()
-      ambientPlaying.current = false
-    }
-  }, [soundEnabled, playAmbient, stopAmbient])
+  }, [playAmbient])
 
   function showHeart(i) {
     clearTimeout(heartTimer.current)
