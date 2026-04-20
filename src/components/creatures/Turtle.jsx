@@ -64,7 +64,7 @@ export default function Turtle({ style }) {
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
-      <div ref={animRef} style={{ position: 'relative', width: 200, height: 200 }}>
+      <div ref={animRef} style={{ position: 'relative', width: 220, height: 220 }}>
         <span className={`creature-tooltip turtle-tooltip${isRevealed ? ' creature-tooltip--visible' : ''}`}>
           Certificates
         </span>

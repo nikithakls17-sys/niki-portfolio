@@ -89,7 +89,7 @@ export default function PufferFish({ style }) {
         <div
           ref={containerRef}
           className={`puffer-img-wrap${isPuffed ? ' puffer-img-wrap--hovered' : ''}`}
-          style={{ position: 'relative', width: 160, height: 160 }}
+          style={{ position: 'relative', width: 180, height: 180 }}
         >
           {/* deflated */}
           <img
