@@ -6,18 +6,19 @@ import { useSoundCtx } from '../../contexts/SoundContext'
 
 const BASE = import.meta.env.BASE_URL
 
+const SMALL = 120
+const BIG   = 220
+
 export default function PufferFish({ style }) {
   const [isPuffed, setIsPuffed] = useState(false)
-  const containerRef = useRef(null)
-  const swimRef      = useRef(null)
-  const idleRef      = useRef(null)
-  const clickedRef   = useRef(false)
-  const navigate     = useNavigate()
+  const swimRef    = useRef(null)
+  const clickedRef = useRef(false)
+  const navigate   = useNavigate()
   const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
 
-  // Gentle left-right swim
+  // Gentle left-right swim on the swim wrapper
   useEffect(() => {
     const el = swimRef.current
     if (!el) return
@@ -27,47 +28,24 @@ export default function PufferFish({ style }) {
     return () => ctx.revert()
   }, [])
 
-  // Idle breathing: toggle isPuffed every 3s
-  function startIdle() {
-    stopIdle()
-    idleRef.current = setInterval(() => {
-      setIsPuffed(p => !p)
-    }, 3000)
-  }
-
-  function stopIdle() {
-    if (idleRef.current) {
-      clearInterval(idleRef.current)
-      idleRef.current = null
-    }
-  }
-
-  useEffect(() => {
-    startIdle()
-    return stopIdle
-  }, [])
-
   function handleMouseEnter() {
-    stopIdle()
     setIsPuffed(true)
     if (!isSfxMuted) playHover()
   }
 
   function handleMouseLeave() {
     if (clickedRef.current) return
-    setTimeout(() => {
-      setIsPuffed(false)
-      startIdle()
-    }, 1000)
+    setIsPuffed(false)
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
-    stopIdle()
     setIsPuffed(true)
     setTimeout(() => navigate('/hobbies'), 400)
   }
+
+  const size = isPuffed ? BIG : SMALL
 
   return (
     <div
@@ -86,33 +64,40 @@ export default function PufferFish({ style }) {
       </span>
 
       <div ref={swimRef}>
+        {/* Container resizes with the active image */}
         <div
-          ref={containerRef}
           className={`puffer-img-wrap${isPuffed ? ' puffer-img-wrap--hovered' : ''}`}
-          style={{ position: 'relative', width: 180, height: 180 }}
+          style={{
+            position: 'relative',
+            width: size,
+            height: size,
+            transition: 'width 0.5s ease, height 0.5s ease',
+          }}
         >
-          {/* deflated */}
+          {/* deflated — 120px natural */}
           <img
             src={`${BASE}creatures/puffer2.png`}
             alt="Puffer fish"
             draggable={false}
             style={{
               position: 'absolute', top: 0, left: 0,
-              width: '100%',
+              width: '100%', height: '100%',
+              objectFit: 'contain',
               opacity: isPuffed ? 0 : 1,
-              transition: 'opacity 0.5s ease',
+              transition: 'opacity 0.4s ease',
             }}
           />
-          {/* puffed */}
+          {/* puffed — 220px natural */}
           <img
             src={`${BASE}creatures/puffer1.png`}
             alt="Puffer fish puffed"
             draggable={false}
             style={{
               position: 'absolute', top: 0, left: 0,
-              width: '100%',
+              width: '100%', height: '100%',
+              objectFit: 'contain',
               opacity: isPuffed ? 1 : 0,
-              transition: 'opacity 0.5s ease',
+              transition: 'opacity 0.4s ease',
             }}
           />
         </div>

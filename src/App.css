@@ -285,7 +285,6 @@
 }
 
 .puffer-img-wrap {
-  filter: drop-shadow(0 0 8px rgba(255, 200, 100, 0.45));
   transition: filter 0.3s ease;
 }
 
@@ -298,7 +297,7 @@
 /* ── Turtle ───────────────────────────────────── */
 .turtle-pos {
   position: absolute;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   cursor: pointer;
   pointer-events: auto;
   user-select: none;
