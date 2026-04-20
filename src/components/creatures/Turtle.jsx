@@ -7,11 +7,12 @@ import { useSoundCtx } from '../../contexts/SoundContext'
 const BASE = import.meta.env.BASE_URL
 
 export default function Turtle({ style }) {
-  const [hovered, setHovered] = useState(false)
-  const posRef    = useRef(null)
-  const animRef   = useRef(null)
-  const navigate  = useNavigate()
+  const [isRevealed, setIsRevealed] = useState(false)
+  const animRef    = useRef(null)
+  const posRef     = useRef(null)
+  const hideTimer  = useRef(null)
   const clickedRef = useRef(false)
+  const navigate   = useNavigate()
   const { soundEnabled } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
@@ -26,9 +27,15 @@ export default function Turtle({ style }) {
     return () => ctx.revert()
   }, [])
 
-  function handleHoverEnter() {
-    setHovered(true)
+  function handleMouseEnter() {
+    clearTimeout(hideTimer.current)
+    setIsRevealed(true)
     if (soundEnabled) playHover()
+  }
+
+  function handleMouseLeave() {
+    if (clickedRef.current) return
+    hideTimer.current = setTimeout(() => setIsRevealed(false), 500)
   }
 
   function handleClick() {
@@ -50,23 +57,42 @@ export default function Turtle({ style }) {
       className="turtle-pos"
       style={style}
       onClick={handleClick}
-      onMouseEnter={handleHoverEnter}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       role="button"
       aria-label="Go to Certificates"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
-      <div ref={animRef} style={{ position: 'relative' }}>
-        <span className={`creature-tooltip turtle-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>
+      <div ref={animRef} style={{ position: 'relative', width: 200, height: 200 }}>
+        <span className={`creature-tooltip turtle-tooltip${isRevealed ? ' creature-tooltip--visible' : ''}`}>
           Certificates
         </span>
+
+        {/* shell only */}
+        <img
+          src={`${BASE}creatures/turtle_shell.png`}
+          alt="Turtle hiding in shell"
+          draggable={false}
+          style={{
+            position: 'absolute', top: 0, left: 0,
+            width: '100%',
+            opacity: isRevealed ? 0 : 1,
+            transition: 'opacity 0.6s ease',
+          }}
+        />
+        {/* mama + baby */}
         <img
           src={`${BASE}creatures/turtle_both.png`}
           alt="Turtle with baby"
-          width={180}
           draggable={false}
-          className={`turtle-img${hovered ? ' turtle-img--hovered' : ''}`}
+          className={isRevealed ? 'turtle-img--hovered' : 'turtle-img'}
+          style={{
+            position: 'absolute', top: 0, left: 0,
+            width: '100%',
+            opacity: isRevealed ? 1 : 0,
+            transition: 'opacity 0.6s ease',
+          }}
         />
       </div>
     </div>

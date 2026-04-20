@@ -7,14 +7,12 @@ import { useSoundCtx } from '../../contexts/SoundContext'
 const BASE = import.meta.env.BASE_URL
 
 export default function PufferFish({ style }) {
-  const [hovered, setHovered] = useState(false)
-  const posRef    = useRef(null)
-  const swimRef   = useRef(null)
-  const puffer2   = useRef(null)
-  const puffer1   = useRef(null)
-  const idleTweens = useRef([])
-  const navigate  = useNavigate()
-  const clickedRef = useRef(false)
+  const [isPuffed, setIsPuffed] = useState(false)
+  const containerRef = useRef(null)
+  const swimRef      = useRef(null)
+  const idleRef      = useRef(null)
+  const clickedRef   = useRef(false)
+  const navigate     = useNavigate()
   const { soundEnabled } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
@@ -29,48 +27,50 @@ export default function PufferFish({ style }) {
     return () => ctx.revert()
   }, [])
 
-  // Idle breathing: slow crossfade puffer2 ↔ puffer1, 3s each direction
+  // Idle breathing: toggle isPuffed every 3s
   function startIdle() {
-    gsap.killTweensOf([puffer1.current, puffer2.current])
-    const t1 = gsap.to(puffer2.current, { opacity: 0, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-    const t2 = gsap.to(puffer1.current, { opacity: 1, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-    idleTweens.current = [t1, t2]
+    stopIdle()
+    idleRef.current = setInterval(() => {
+      setIsPuffed(p => !p)
+    }, 3000)
   }
 
   function stopIdle() {
-    idleTweens.current.forEach(t => t.kill())
-    idleTweens.current = []
+    if (idleRef.current) {
+      clearInterval(idleRef.current)
+      idleRef.current = null
+    }
   }
 
   useEffect(() => {
     startIdle()
-    return () => stopIdle()
+    return stopIdle
   }, [])
 
   function handleMouseEnter() {
-    setHovered(true)
     stopIdle()
-    // Instantly jump to puffed state
-    gsap.set(puffer2.current, { opacity: 0 })
-    gsap.set(puffer1.current, { opacity: 1 })
+    setIsPuffed(true)
     if (soundEnabled) playHover()
   }
 
   function handleMouseLeave() {
-    setHovered(false)
     if (clickedRef.current) return
-    startIdle()
+    setTimeout(() => {
+      setIsPuffed(false)
+      startIdle()
+    }, 1000)
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
-    setTimeout(() => navigate('/hobbies'), 300)
+    stopIdle()
+    setIsPuffed(true)
+    setTimeout(() => navigate('/hobbies'), 400)
   }
 
   return (
     <div
-      ref={posRef}
       className="puffer-pos"
       style={style}
       onClick={handleClick}
@@ -81,27 +81,39 @@ export default function PufferFish({ style }) {
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
-      <span className={`creature-tooltip puffer-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>
+      <span className={`creature-tooltip puffer-tooltip${isPuffed ? ' creature-tooltip--visible' : ''}`}>
         Hobbies
       </span>
 
       <div ref={swimRef}>
-        <div className={`puffer-img-wrap${hovered ? ' puffer-img-wrap--hovered' : ''}`} style={{ position: 'relative', width: 100 }}>
+        <div
+          ref={containerRef}
+          className={`puffer-img-wrap${isPuffed ? ' puffer-img-wrap--hovered' : ''}`}
+          style={{ position: 'relative', width: 160, height: 160 }}
+        >
+          {/* deflated */}
           <img
-            ref={puffer2}
             src={`${BASE}creatures/puffer2.png`}
             alt="Puffer fish"
-            width={100}
             draggable={false}
-            style={{ display: 'block' }}
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '100%',
+              opacity: isPuffed ? 0 : 1,
+              transition: 'opacity 0.5s ease',
+            }}
           />
+          {/* puffed */}
           <img
-            ref={puffer1}
             src={`${BASE}creatures/puffer1.png`}
             alt="Puffer fish puffed"
-            width={100}
             draggable={false}
-            style={{ position: 'absolute', top: 0, left: 0, opacity: 0 }}
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '100%',
+              opacity: isPuffed ? 1 : 0,
+              transition: 'opacity 0.5s ease',
+            }}
           />
         </div>
       </div>
