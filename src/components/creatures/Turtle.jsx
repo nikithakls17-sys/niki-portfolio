@@ -7,29 +7,46 @@ import { useSoundCtx } from '../../contexts/SoundContext'
 const BASE = import.meta.env.BASE_URL
 
 export default function Turtle({ style }) {
-  const [isRevealed, setIsRevealed] = useState(false)
+  const [frame, setFrame] = useState(1)
   const [hovered, setHovered] = useState(false)
-  const posRef     = useRef(null)
-  const containerRef = useRef(null)
-  const clickedRef = useRef(false)
-  const navigate   = useNavigate()
+  const posRef      = useRef(null)
+  const animRef     = useRef(null)
+  const intervalRef = useRef(null)
+  const clickedRef  = useRef(false)
+  const navigate    = useNavigate()
   const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
 
+  function startInterval() {
+    intervalRef.current = setInterval(() => setFrame(f => (f === 1 ? 2 : 1)), 1200)
+  }
+
+  function stopInterval() {
+    clearInterval(intervalRef.current)
+  }
+
   useEffect(() => {
-    const tween = gsap.to(containerRef.current, {
-      y: -15,
-      duration: 3,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    })
-    return () => tween.kill()
+    startInterval()
+    return () => stopInterval()
+  }, [])
+
+  useEffect(() => {
+    const el = animRef.current
+    if (!el) return
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { rotation: -4, transformOrigin: '50% 90%' },
+        { rotation: 4, duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: -1 },
+      )
+    }, el)
+    return () => ctx.revert()
   }, [])
 
   function handleMouseEnter() {
-    setIsRevealed(true)
+    stopInterval()
+    setFrame(2)
     setHovered(true)
     gsap.to(posRef.current, { scale: 1.15, duration: 0.3, ease: 'power2.out' })
     if (!isSfxMuted) playHover()
@@ -37,9 +54,9 @@ export default function Turtle({ style }) {
 
   function handleMouseLeave() {
     setHovered(false)
-    setTimeout(() => setIsRevealed(false), 300)
     if (clickedRef.current) return
     gsap.to(posRef.current, { scale: 1, duration: 0.3, ease: 'power2.out' })
+    startInterval()
   }
 
   function handleClick() {
@@ -55,6 +72,8 @@ export default function Turtle({ style }) {
     })
   }
 
+  const src = frame === 1 ? 'turtle_shell' : 'turtle_both'
+
   return (
     <div
       ref={posRef}
@@ -68,42 +87,17 @@ export default function Turtle({ style }) {
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
-      <div ref={containerRef}>
+      <div ref={animRef} className="turtle-anim">
         <span className={`creature-tooltip turtle-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>
           Certificates
         </span>
-        <div
-          style={{
-            position: 'relative',
-            width: 200,
-            minHeight: 130,
-            filter: hovered ? 'drop-shadow(0 0 10px rgba(80,220,120,0.7))' : 'none',
-            transition: 'filter 0.3s ease',
-          }}
-        >
-          <img
-            src={`${BASE}creatures/turtle_shell.png`}
-            alt="Turtle shell"
-            draggable={false}
-            style={{
-              position: 'absolute', top: 0, left: 0,
-              width: '100%',
-              opacity: isRevealed ? 0 : 1,
-              transition: 'opacity 0.8s ease',
-            }}
-          />
-          <img
-            src={`${BASE}creatures/turtle_both.png`}
-            alt="Turtle with baby"
-            draggable={false}
-            style={{
-              position: 'absolute', top: 0, left: 0,
-              width: '100%',
-              opacity: isRevealed ? 1 : 0,
-              transition: 'opacity 0.8s ease',
-            }}
-          />
-        </div>
+        <img
+          src={`${BASE}creatures/${src}.png`}
+          alt="Turtle"
+          width={200}
+          draggable={false}
+          className={`turtle-img${hovered ? ' turtle-img--hovered' : ''}`}
+        />
       </div>
     </div>
   )

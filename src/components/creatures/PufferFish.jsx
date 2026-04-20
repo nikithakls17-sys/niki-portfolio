@@ -10,37 +10,45 @@ const SMALL = 120
 const BIG   = 220
 
 export default function PufferFish({ style }) {
+  const [frame, setFrame] = useState(2)
   const [isPuffed, setIsPuffed] = useState(false)
-  const containerRef = useRef(null)
-  const swimRef    = useRef(null)
-  const clickedRef = useRef(false)
-  const navigate   = useNavigate()
+  const animRef     = useRef(null)
+  const intervalRef = useRef(null)
+  const clickedRef  = useRef(false)
+  const navigate    = useNavigate()
   const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
 
+  function startInterval() {
+    intervalRef.current = setInterval(() => setFrame(f => (f === 1 ? 2 : 1)), 1500)
+  }
+
+  function stopInterval() {
+    clearInterval(intervalRef.current)
+  }
+
   useEffect(() => {
-    const tween = gsap.to(containerRef.current, {
-      y: -10,
-      duration: 2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    })
-    return () => tween.kill()
+    startInterval()
+    return () => stopInterval()
   }, [])
 
-  // Gentle left-right swim on the swim wrapper
   useEffect(() => {
-    const el = swimRef.current
+    const el = animRef.current
     if (!el) return
     const ctx = gsap.context(() => {
-      gsap.fromTo(el, { x: -10 }, { x: 10, duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+      gsap.fromTo(
+        el,
+        { rotation: -5, transformOrigin: '50% 90%' },
+        { rotation: 5, duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: -1 },
+      )
     }, el)
     return () => ctx.revert()
   }, [])
 
   function handleMouseEnter() {
+    stopInterval()
+    setFrame(1)
     setIsPuffed(true)
     if (!isSfxMuted) playHover()
   }
@@ -48,11 +56,14 @@ export default function PufferFish({ style }) {
   function handleMouseLeave() {
     if (clickedRef.current) return
     setIsPuffed(false)
+    setFrame(2)
+    startInterval()
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
+    setFrame(1)
     setIsPuffed(true)
     setTimeout(() => navigate('/hobbies'), 400)
   }
@@ -61,7 +72,6 @@ export default function PufferFish({ style }) {
 
   return (
     <div
-      ref={containerRef}
       className="puffer-pos"
       style={style}
       onClick={handleClick}
@@ -76,8 +86,7 @@ export default function PufferFish({ style }) {
         Hobbies
       </span>
 
-      <div ref={swimRef}>
-        {/* Container resizes with the active image */}
+      <div ref={animRef} className="puffer-anim">
         <div
           className={`puffer-img-wrap${isPuffed ? ' puffer-img-wrap--hovered' : ''}`}
           style={{
@@ -87,31 +96,11 @@ export default function PufferFish({ style }) {
             transition: 'width 0.5s ease, height 0.5s ease',
           }}
         >
-          {/* deflated — 120px natural */}
           <img
-            src={`${BASE}creatures/puffer2.png`}
+            src={`${BASE}creatures/puffer${frame}.png`}
             alt="Puffer fish"
             draggable={false}
-            style={{
-              position: 'absolute', top: 0, left: 0,
-              width: '100%', height: '100%',
-              objectFit: 'contain',
-              opacity: isPuffed ? 0 : 1,
-              transition: 'opacity 0.4s ease',
-            }}
-          />
-          {/* puffed — 220px natural */}
-          <img
-            src={`${BASE}creatures/puffer1.png`}
-            alt="Puffer fish puffed"
-            draggable={false}
-            style={{
-              position: 'absolute', top: 0, left: 0,
-              width: '100%', height: '100%',
-              objectFit: 'contain',
-              opacity: isPuffed ? 1 : 0,
-              transition: 'opacity 0.4s ease',
-            }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
       </div>
