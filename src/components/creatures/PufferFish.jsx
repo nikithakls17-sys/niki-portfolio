@@ -8,74 +8,64 @@ const BASE = import.meta.env.BASE_URL
 
 export default function PufferFish({ style }) {
   const [hovered, setHovered] = useState(false)
-  const posRef   = useRef(null) // positioning wrapper (click + hover target)
-  const swimRef  = useRef(null) // GSAP left-right swim
-  const animRef  = useRef(null) // GSAP scale puff
-  const puffer2  = useRef(null) // deflated img
-  const puffer1  = useRef(null) // puffed img
-  const puffState  = useRef('deflated') // 'deflated'|'puffing'|'puffed'|'deflating'
+  const posRef    = useRef(null)
+  const swimRef   = useRef(null)
+  const puffer2   = useRef(null)
+  const puffer1   = useRef(null)
+  const idleTweens = useRef([])
+  const navigate  = useNavigate()
   const clickedRef = useRef(false)
-  const navigate = useNavigate()
   const { soundEnabled } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
 
-  // Gentle left-right swim on swimRef (avoids conflicting with posRef transform)
+  // Gentle left-right swim
   useEffect(() => {
     const el = swimRef.current
     if (!el) return
     const ctx = gsap.context(() => {
-      gsap.fromTo(el, { x: -14 }, { x: 14, duration: 2.6, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+      gsap.fromTo(el, { x: -10 }, { x: 10, duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1 })
     }, el)
     return () => ctx.revert()
   }, [])
 
-  function startPuff() {
-    if (puffState.current === 'puffing' || puffState.current === 'puffed') return
-    puffState.current = 'puffing'
-    gsap.killTweensOf([animRef.current, puffer1.current, puffer2.current])
-    gsap.to(animRef.current, {
-      scale: 2,
-      duration: 3,
-      ease: 'sine.inOut',
-      transformOrigin: 'center center',
-      onComplete: () => { puffState.current = 'puffed' },
-    })
-    gsap.to(puffer2.current, { opacity: 0, duration: 3, ease: 'sine.inOut' })
-    gsap.to(puffer1.current, { opacity: 1, duration: 3, ease: 'sine.inOut' })
+  // Idle breathing: slow crossfade puffer2 ↔ puffer1, 3s each direction
+  function startIdle() {
+    gsap.killTweensOf([puffer1.current, puffer2.current])
+    const t1 = gsap.to(puffer2.current, { opacity: 0, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+    const t2 = gsap.to(puffer1.current, { opacity: 1, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+    idleTweens.current = [t1, t2]
   }
 
-  function endPuff() {
-    if (puffState.current === 'deflated' || puffState.current === 'deflating') return
-    puffState.current = 'deflating'
-    gsap.killTweensOf([animRef.current, puffer1.current, puffer2.current])
-    gsap.to(animRef.current, {
-      scale: 1,
-      duration: 2,
-      ease: 'sine.inOut',
-      onComplete: () => { puffState.current = 'deflated' },
-    })
-    gsap.to(puffer2.current, { opacity: 1, duration: 2, ease: 'sine.inOut' })
-    gsap.to(puffer1.current, { opacity: 0, duration: 2, ease: 'sine.inOut' })
+  function stopIdle() {
+    idleTweens.current.forEach(t => t.kill())
+    idleTweens.current = []
   }
+
+  useEffect(() => {
+    startIdle()
+    return () => stopIdle()
+  }, [])
 
   function handleMouseEnter() {
     setHovered(true)
-    startPuff()
+    stopIdle()
+    // Instantly jump to puffed state
+    gsap.set(puffer2.current, { opacity: 0 })
+    gsap.set(puffer1.current, { opacity: 1 })
     if (soundEnabled) playHover()
   }
 
   function handleMouseLeave() {
     setHovered(false)
-    if (!clickedRef.current) endPuff()
+    if (clickedRef.current) return
+    startIdle()
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
-    startPuff()
-    // puff (3s) + hold (1s) then navigate
-    setTimeout(() => navigate('/hobbies'), 4000)
+    setTimeout(() => navigate('/hobbies'), 300)
   }
 
   return (
@@ -91,15 +81,12 @@ export default function PufferFish({ style }) {
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
-      {/* tooltip outside both anim layers so it doesn't scale */}
       <span className={`creature-tooltip puffer-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>
         Hobbies
       </span>
 
-      {/* swim layer */}
       <div ref={swimRef}>
-        {/* scale/puff layer */}
-        <div ref={animRef} style={{ position: 'relative', width: 100 }}>
+        <div className={`puffer-img-wrap${hovered ? ' puffer-img-wrap--hovered' : ''}`} style={{ position: 'relative', width: 100 }}>
           <img
             ref={puffer2}
             src={`${BASE}creatures/puffer2.png`}
