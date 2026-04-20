@@ -66,7 +66,7 @@ export default function TreasureChest({ style }) {
         <img
           src={`${BASE}creatures/${open ? 'treasure_open' : 'treasure_closed'}.png`}
           alt="Treasure chest"
-          width={150}
+          width={160}
           draggable={false}
           className={`treasure-img${open ? ' treasure-img--open' : ''}`}
         />

@@ -7,6 +7,7 @@ import { useSoundCtx } from '../../contexts/SoundContext'
 const BASE = import.meta.env.BASE_URL
 
 export default function Turtle({ style }) {
+  const [isRevealed, setIsRevealed] = useState(false)
   const [hovered, setHovered] = useState(false)
   const posRef     = useRef(null)
   const animRef    = useRef(null)
@@ -16,7 +17,6 @@ export default function Turtle({ style }) {
 
   const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
 
-  // Idle bob — same rhythm as other creatures
   useEffect(() => {
     const el = animRef.current
     if (!el) return
@@ -27,6 +27,7 @@ export default function Turtle({ style }) {
   }, [])
 
   function handleMouseEnter() {
+    setIsRevealed(true)
     setHovered(true)
     gsap.to(posRef.current, { scale: 1.15, duration: 0.3, ease: 'power2.out' })
     if (!isSfxMuted) playHover()
@@ -34,6 +35,7 @@ export default function Turtle({ style }) {
 
   function handleMouseLeave() {
     setHovered(false)
+    setTimeout(() => setIsRevealed(false), 300)
     if (clickedRef.current) return
     gsap.to(posRef.current, { scale: 1, duration: 0.3, ease: 'power2.out' })
   }
@@ -68,14 +70,38 @@ export default function Turtle({ style }) {
         <span className={`creature-tooltip turtle-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>
           Certificates
         </span>
-        <img
-          src={`${BASE}creatures/turtle_both.png`}
-          alt="Turtle with baby"
-          width={200}
-          draggable={false}
-          className={`turtle-img${hovered ? ' turtle-img--hovered' : ''}`}
-          style={{ display: 'block' }}
-        />
+        <div
+          style={{
+            position: 'relative',
+            width: 200,
+            minHeight: 130,
+            filter: hovered ? 'drop-shadow(0 0 10px rgba(80,220,120,0.7))' : 'none',
+            transition: 'filter 0.3s ease',
+          }}
+        >
+          <img
+            src={`${BASE}creatures/turtle_shell.png`}
+            alt="Turtle shell"
+            draggable={false}
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '100%',
+              opacity: isRevealed ? 0 : 1,
+              transition: 'opacity 0.8s ease',
+            }}
+          />
+          <img
+            src={`${BASE}creatures/turtle_both.png`}
+            alt="Turtle with baby"
+            draggable={false}
+            style={{
+              position: 'absolute', top: 0, left: 0,
+              width: '100%',
+              opacity: isRevealed ? 1 : 0,
+              transition: 'opacity 0.8s ease',
+            }}
+          />
+        </div>
       </div>
     </div>
   )

@@ -71,7 +71,7 @@ export default function Jellyfish({ style }) {
         <img
           src={`${BASE}creatures/jelly${frame}.png`}
           alt="Jellyfish"
-          width={280}
+          width={260}
           draggable={false}
           className={`jelly-img${hovered ? ' jelly-img--hovered' : ''}`}
         />

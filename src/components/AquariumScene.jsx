@@ -13,8 +13,8 @@ const BASE = import.meta.env.BASE_URL
 
 // Two swimming schools — fish_heart is the hover crossfade target, not a swimmer
 const FISH_SCHOOLS = [
-  { src: 'fish_school1.png', top: '28%', duration: 22, delay: 0, width: 300 },
-  { src: 'fish_school2.png', top: '44%', duration: 30, delay: 8, width: 300 },
+  { src: 'fish_school1.png', top: '45%', duration: 22, delay: 0, width: 300 },
+  { src: 'fish_school2.png', top: '55%', duration: 30, delay: 8, width: 300 },
 ]
 
 // ── SVG scene data ────────────────────────────────────────────────────────────
@@ -455,11 +455,11 @@ export default function AquariumScene({ onCreatureClick }) {
 
       {/* ── Clickable creature placeholders ── */}
       <div className="creatures-layer">
-        <Jellyfish     style={{ left: '50%', top: '18%' }} />
-        <Starfish      style={{ left: '28%', top: '42%' }} />
-        <PufferFish    style={{ left: '65%', top: '35%' }} />
-        <Turtle        style={{ left: '20%', top: '55%'  }} />
-        <TreasureChest style={{ left: '78%', bottom: '8%', transform: 'translateX(-50%)' }} />
+        <Jellyfish     style={{ left: '48%', top: '10%' }} />
+        <Starfish      style={{ left: '18%', top: '32%' }} />
+        <PufferFish    style={{ left: '62%', top: '28%' }} />
+        <Turtle        style={{ left: '22%', top: '52%' }} />
+        <TreasureChest style={{ left: '78%', top: '68%', transform: 'translateX(-50%)' }} />
 
         {/* Seaweed click area — left seaweed column */}
         <button
