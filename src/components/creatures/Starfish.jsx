@@ -13,7 +13,7 @@ export default function Starfish({ style }) {
   const animRef = useRef(null)
   const navigate = useNavigate()
   const clickedRef = useRef(false)
-  const { soundEnabled } = useSoundCtx()
+  const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
   const [playClick] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.8, interrupt: true })
@@ -40,13 +40,13 @@ export default function Starfish({ style }) {
 
   function handleHoverEnter() {
     setHovered(true)
-    if (soundEnabled) playHover()
+    if (!isSfxMuted) playHover()
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
-    if (soundEnabled) playClick()
+    if (!isSfxMuted) playClick()
     gsap.killTweensOf(animRef.current)
     gsap.to(posRef.current, {
       rotation: 360,

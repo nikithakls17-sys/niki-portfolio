@@ -13,7 +13,7 @@ export default function Turtle({ style }) {
   const hideTimer  = useRef(null)
   const clickedRef = useRef(false)
   const navigate   = useNavigate()
-  const { soundEnabled } = useSoundCtx()
+  const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
 
@@ -30,7 +30,7 @@ export default function Turtle({ style }) {
   function handleMouseEnter() {
     clearTimeout(hideTimer.current)
     setIsRevealed(true)
-    if (soundEnabled) playHover()
+    if (!isSfxMuted) playHover()
   }
 
   function handleMouseLeave() {

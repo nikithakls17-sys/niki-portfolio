@@ -2,28 +2,27 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { Howler } from 'howler'
 
 const SoundContext = createContext({
-  soundEnabled: true,
-  setSoundEnabled: () => {},
-  volume: 1,
-  setVolume: () => {},
+  isMusicMuted: false,
+  isSfxMuted:   false,
+  volume:       1,
+  toggleMusic:  () => {},
+  toggleSfx:    () => {},
+  setVolume:    () => {},
 })
 
 export function SoundProvider({ children }) {
-  const [soundEnabled, setSoundEnabled] = useState(true)
-  const [volume, setVolume] = useState(1)
+  const [isMusicMuted, setIsMusicMuted] = useState(false)
+  const [isSfxMuted,   setIsSfxMuted]   = useState(false)
+  const [volume,       setVolume]        = useState(1)
 
-  // Global mute/unmute via Howler
-  useEffect(() => {
-    Howler.mute(!soundEnabled)
-  }, [soundEnabled])
-
-  // Global volume via Howler
-  useEffect(() => {
-    Howler.volume(volume)
-  }, [volume])
+  useEffect(() => { Howler.volume(volume) }, [volume])
 
   return (
-    <SoundContext.Provider value={{ soundEnabled, setSoundEnabled, volume, setVolume }}>
+    <SoundContext.Provider value={{
+      isMusicMuted, toggleMusic: () => setIsMusicMuted(m => !m),
+      isSfxMuted,   toggleSfx:   () => setIsSfxMuted(s => !s),
+      volume, setVolume,
+    }}>
       {children}
     </SoundContext.Provider>
   )

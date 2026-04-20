@@ -13,7 +13,7 @@ export default function PufferFish({ style }) {
   const idleRef      = useRef(null)
   const clickedRef   = useRef(false)
   const navigate     = useNavigate()
-  const { soundEnabled } = useSoundCtx()
+  const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
 
@@ -50,7 +50,7 @@ export default function PufferFish({ style }) {
   function handleMouseEnter() {
     stopIdle()
     setIsPuffed(true)
-    if (soundEnabled) playHover()
+    if (!isSfxMuted) playHover()
   }
 
   function handleMouseLeave() {

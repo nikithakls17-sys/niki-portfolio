@@ -520,12 +520,12 @@
   min-width: 80px;
 }
 
-.menu-guide-arrow {
-  font-size: 11px;
-  color: rgba(80, 160, 210, 0.5);
-  letter-spacing: -1px;
+.menu-guide-line {
   flex: 1;
-  text-align: center;
+  height: 1px;
+  background: rgba(80, 160, 210, 0.22);
+  margin: 0 6px;
+  align-self: center;
 }
 
 .menu-guide-section {
@@ -575,19 +575,26 @@
   margin-top: 4px;
 }
 
+.menu-sound-toggles {
+  display: flex;
+  gap: 8px;
+}
+
 .menu-sound-toggle {
+  flex: 1;
   background: rgba(20, 80, 160, 0.4);
   border: 1px solid rgba(80, 180, 255, 0.25);
   color: rgba(180, 230, 255, 0.9);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 9px 16px;
+  padding: 9px 10px;
   border-radius: 10px;
   cursor: pointer;
   outline: none;
   transition: background 0.2s ease, border-color 0.2s ease;
   text-align: center;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
 .menu-sound-toggle:hover {

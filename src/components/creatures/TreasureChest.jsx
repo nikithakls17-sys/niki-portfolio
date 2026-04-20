@@ -12,7 +12,7 @@ export default function TreasureChest({ style }) {
   const animRef = useRef(null)
   const navigate = useNavigate()
   const clickedRef = useRef(false)
-  const { soundEnabled } = useSoundCtx()
+  const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/treasure.wav`, { volume: 0.7, interrupt: true })
   const [playClick] = useSound(`${BASE}sounds/treasure.wav`, { volume: 1.0, interrupt: true })
@@ -29,13 +29,13 @@ export default function TreasureChest({ style }) {
 
   function handleHoverEnter() {
     setOpen(true)
-    if (soundEnabled) playHover()
+    if (!isSfxMuted) playHover()
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
-    if (soundEnabled) playClick()
+    if (!isSfxMuted) playClick()
     gsap.to(posRef.current, {
       scale: 1.25,
       duration: 0.18,

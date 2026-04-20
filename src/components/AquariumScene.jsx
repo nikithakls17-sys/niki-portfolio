@@ -187,33 +187,49 @@ export default function AquariumScene({ onCreatureClick }) {
   const [heartFish, setHeartFish] = useState(null)
   const [seaweedGlowing, setSeaweedGlowing] = useState(false)
 
-  const { soundEnabled } = useSoundCtx()
+  const { isMusicMuted, isSfxMuted } = useSoundCtx()
   const ambientStarted = useRef(false)
+  const ambientPlaying = useRef(false)
 
-  const [playAmbient] = useSound(
+  const [playAmbient, { stop: stopAmbient }] = useSound(
     `${BASE}sounds/underwater background.mp3`,
     { loop: true, volume: 0.3, interrupt: false },
   )
   const [playCartoonBubble] = useSound(`${BASE}sounds/cartoon bubble.wav`, { volume: 0.6, interrupt: true })
 
-  // Start ambient on first user interaction — Howler.mute/volume handle the rest
+  // Start ambient on first user interaction
   useEffect(() => {
     function onFirstInteraction() {
       if (ambientStarted.current) return
       ambientStarted.current = true
-      playAmbient()
+      if (!isMusicMuted) {
+        playAmbient()
+        ambientPlaying.current = true
+      }
       document.removeEventListener('click', onFirstInteraction)
     }
     document.addEventListener('click', onFirstInteraction)
     return () => document.removeEventListener('click', onFirstInteraction)
-  }, [playAmbient])
+  }, [playAmbient, isMusicMuted])
+
+  // Stop/resume ambient when music mute toggles
+  useEffect(() => {
+    if (!ambientStarted.current) return
+    if (!isMusicMuted && !ambientPlaying.current) {
+      playAmbient()
+      ambientPlaying.current = true
+    } else if (isMusicMuted && ambientPlaying.current) {
+      stopAmbient()
+      ambientPlaying.current = false
+    }
+  }, [isMusicMuted, playAmbient, stopAmbient])
 
   function showHeart(i) {
     clearTimeout(heartTimer.current)
     fishTweens.current[i]?.pause()
     gsap.to(fishRefs.current[i], { opacity: 1, duration: 0.2 })
     setHeartFish(i)
-    if (soundEnabled) playCartoonBubble()
+    if (!isSfxMuted) playCartoonBubble()
   }
 
   function hideHeart(i) {
@@ -228,7 +244,7 @@ export default function AquariumScene({ onCreatureClick }) {
     fishTweens.current[i]?.pause()
     gsap.to(fishRefs.current[i], { opacity: 1, duration: 0.2 })
     setHeartFish(i)
-    if (soundEnabled) playCartoonBubble()
+    if (!isSfxMuted) playCartoonBubble()
     heartTimer.current = setTimeout(() => {
       fishTweens.current[i]?.resume()
       gsap.to(fishRefs.current[i], { opacity: 0.85, duration: 0.3 })

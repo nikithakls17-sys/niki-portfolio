@@ -26,13 +26,13 @@ export default function HamburgerMenu() {
   const panelRef   = useRef(null)
   const overlayRef = useRef(null)
   const navigate   = useNavigate()
-  const { soundEnabled, setSoundEnabled, volume, setVolume } = useSoundCtx()
+  const { isMusicMuted, isSfxMuted, toggleMusic, toggleSfx, volume, setVolume } = useSoundCtx()
 
   useEffect(() => {
     const panel   = panelRef.current
     const overlay = overlayRef.current
     if (open) {
-      gsap.to(panel,   { x: 0,     duration: 0.38, ease: 'power3.out' })
+      gsap.to(panel,   { x: 0,      duration: 0.38, ease: 'power3.out' })
       gsap.to(overlay, { opacity: 1, duration: 0.28,
         onStart: () => { overlay.style.pointerEvents = 'auto' },
       })
@@ -54,14 +54,16 @@ export default function HamburgerMenu() {
 
   return (
     <>
-      {/* Hamburger button — always visible, right side, vertically centered */}
-      <button
-        className="hamburger-btn"
-        onClick={() => setOpen(o => !o)}
-        aria-label="Toggle menu"
-      >
-        ☰
-      </button>
+      {/* Hamburger button — hidden when panel is open */}
+      {!open && (
+        <button
+          className="hamburger-btn"
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+        >
+          ☰
+        </button>
+      )}
 
       {/* Click-outside backdrop */}
       <div
@@ -93,7 +95,7 @@ export default function HamburgerMenu() {
             >
               <span className="menu-guide-icon">{icon}</span>
               <span className="menu-guide-name">{name}</span>
-              <span className="menu-guide-arrow">──→</span>
+              <span className="menu-guide-line" />
               <span className="menu-guide-section">{section}</span>
             </button>
           ))}
@@ -112,12 +114,20 @@ export default function HamburgerMenu() {
         {/* Sound controls */}
         <h3 className="menu-section-title">sounds</h3>
         <div className="menu-sound">
-          <button
-            className={`menu-sound-toggle${soundEnabled ? '' : ' menu-sound-toggle--off'}`}
-            onClick={() => setSoundEnabled(s => !s)}
-          >
-            {soundEnabled ? '🔊 Sounds ON' : '🔇 Sounds OFF'}
-          </button>
+          <div className="menu-sound-toggles">
+            <button
+              className={`menu-sound-toggle${isMusicMuted ? ' menu-sound-toggle--off' : ''}`}
+              onClick={toggleMusic}
+            >
+              🎵 Music {isMusicMuted ? 'OFF' : 'ON'}
+            </button>
+            <button
+              className={`menu-sound-toggle${isSfxMuted ? ' menu-sound-toggle--off' : ''}`}
+              onClick={toggleSfx}
+            >
+              🔊 Effects {isSfxMuted ? 'OFF' : 'ON'}
+            </button>
+          </div>
           <div className="menu-volume-row">
             <span className="menu-volume-label">🔈</span>
             <input

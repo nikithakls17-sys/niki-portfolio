@@ -13,7 +13,7 @@ export default function Jellyfish({ style }) {
   const animRef = useRef(null)
   const navigate = useNavigate()
   const clickedRef = useRef(false)
-  const { soundEnabled } = useSoundCtx()
+  const { isSfxMuted } = useSoundCtx()
 
   const [playHover] = useSound(`${BASE}sounds/bubble small.wav`, { volume: 0.5, interrupt: true })
   const [playClick] = useSound(`${BASE}sounds/bubble long.wav`,  { volume: 0.7, interrupt: true })
@@ -37,13 +37,13 @@ export default function Jellyfish({ style }) {
 
   function handleHoverEnter() {
     setHovered(true)
-    if (soundEnabled) playHover()
+    if (!isSfxMuted) playHover()
   }
 
   function handleClick() {
     if (clickedRef.current) return
     clickedRef.current = true
-    if (soundEnabled) playClick()
+    if (!isSfxMuted) playClick()
     gsap.killTweensOf(animRef.current)
     gsap.to(posRef.current, {
       y: -(window.innerHeight + 300),
