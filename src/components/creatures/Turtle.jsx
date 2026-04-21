@@ -94,7 +94,7 @@ export default function Turtle({ style }) {
         <img
           src={`${BASE}creatures/${src}.png`}
           alt="Turtle"
-          width={200}
+          width={250}
           draggable={false}
           className={`turtle-img${hovered ? ' turtle-img--hovered' : ''}`}
         />

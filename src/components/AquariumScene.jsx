@@ -455,11 +455,11 @@ export default function AquariumScene({ onCreatureClick }) {
 
       {/* ── Clickable creature placeholders ── */}
       <div className="creatures-layer">
-        <Jellyfish     style={{ left: '48%', top: '10%' }} />
-        <Starfish      style={{ left: '18%', top: '32%' }} />
-        <PufferFish    style={{ left: '62%', top: '28%' }} />
-        <Turtle        style={{ left: '22%', top: '52%' }} />
-        <TreasureChest style={{ left: '78%', top: '68%', transform: 'translateX(-50%)' }} />
+        <Jellyfish     style={{ left: '48%', top: '30%' }} />
+        <Starfish      style={{ left: '18%', top: '38%' }} />
+        <PufferFish    style={{ left: '82%', top: '58%' }} />
+        <Turtle        style={{ left: '22%', top: '70%' }} />
+        <TreasureChest style={{ left: '78%', top: '78%', transform: 'translateX(-50%)' }} />
 
         {/* Seaweed click area — left seaweed column */}
         <button
