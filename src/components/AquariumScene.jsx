@@ -351,10 +351,6 @@ export default function AquariumScene({ onCreatureClick }) {
             <stop offset="0%"   stopColor="#6ed8f8" stopOpacity="0.20" />
             <stop offset="100%" stopColor="#6ed8f8" stopOpacity="0"    />
           </radialGradient>
-          <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#183848" stopOpacity="0.55" />
-            <stop offset="100%" stopColor="#08141e" stopOpacity="1"    />
-          </linearGradient>
         </defs>
 
         {/* Diffuse surface light */}
@@ -370,9 +366,6 @@ export default function AquariumScene({ onCreatureClick }) {
             />
           ))}
         </g>
-
-        {/* Seafloor base */}
-        <ellipse cx="720" cy="924" rx="1080" ry="62" fill="url(#floorGrad)" />
 
         {/* Far coral layer */}
         <path d={CORAL_FAR} fill="#06131e" />
