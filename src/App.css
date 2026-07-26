@@ -340,12 +340,6 @@
   text-shadow: 0 0 12px rgba(40, 200, 100, 0.9), 0 0 4px rgba(255, 255, 255, 0.5);
 }
 
-.seaweed-glow {
-  filter:
-    drop-shadow(0 0 6px rgba(46, 204, 113, 0.8))
-    drop-shadow(0 0 14px rgba(46, 204, 113, 0.5));
-}
-
 /* ── Hamburger button ─────────────────────────── */
 .hamburger-btn {
   position: fixed;
@@ -698,6 +692,13 @@
   gap: 16px;
 }
 
+.content-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .page-content {
   display: flex;
   flex-direction: column;
@@ -849,47 +850,43 @@
 .parchment-card {
   max-width: 620px;
   width: 90%;
-  background: rgba(252, 244, 218, 0.96);
-  border: 2px solid rgba(180, 145, 80, 0.35);
-  border-radius: 12px;
+  background: rgba(10, 28, 38, 0.78);
+  border: 1px solid rgba(200, 160, 90, 0.3);
+  border-radius: 16px;
   padding: 48px 52px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow:
-    0 0 60px rgba(200, 160, 60, 0.15),
-    inset 0 0 30px rgba(200, 170, 100, 0.08);
+    0 0 40px rgba(200, 160, 60, 0.1),
+    inset 0 0 30px rgba(200, 170, 100, 0.05);
   font-family: 'Caveat', cursive;
   margin: 40px 0;
-}
-
-.parchment-deco {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: -8px;
 }
 
 .parchment-text {
   font-size: 1.25rem;
   line-height: 1.75;
-  color: #3d2b1a;
+  color: rgba(230, 218, 195, 0.92);
   margin: 0;
 }
 
 .parchment-text--closing {
   font-size: 1.15rem;
-  color: #5a3e28;
+  color: rgba(255, 210, 150, 0.85);
   font-style: italic;
 }
 
 .parchment-name {
   font-weight: 700;
-  color: #2a1a0e;
+  color: rgba(255, 225, 175, 0.98);
 }
 
 .parchment-divider {
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(160, 120, 60, 0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(200, 160, 90, 0.4), transparent);
   margin: 4px 0;
 }
 
@@ -902,12 +899,12 @@
 .parchment-uni {
   font-size: 1rem;
   font-weight: 600;
-  color: #4a3020;
+  color: rgba(255, 225, 180, 0.95);
 }
 
 .parchment-major {
   font-size: 0.95rem;
-  color: #6a4a30;
+  color: rgba(210, 190, 165, 0.75);
 }
 
 .parchment-links {
@@ -933,15 +930,15 @@
 }
 
 .parchment-link--linkedin {
-  background: rgba(10, 102, 194, 0.15);
-  border: 1px solid rgba(10, 102, 194, 0.4);
-  color: #1a5a8a;
+  background: rgba(80, 180, 255, 0.12);
+  border: 1px solid rgba(80, 180, 255, 0.35);
+  color: rgba(160, 215, 255, 0.95);
 }
 
 .parchment-link--github {
-  background: rgba(40, 40, 40, 0.1);
-  border: 1px solid rgba(40, 40, 40, 0.25);
-  color: #3a2a1a;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(225, 220, 210, 0.9);
 }
 
 .parchment-back {

@@ -70,7 +70,17 @@ export default function Projects() {
       <div className="content-shell">
         <header className="content-header">
           <h1 className="page-title">Projects</h1>
-          <button className="back-btn" onClick={() => navigate('/')}>← Back to the Ocean</button>
+          <div className="content-header__actions">
+            <a
+              href="https://github.com/nikithakls17-sys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="github-btn"
+            >
+              View GitHub →
+            </a>
+            <button className="back-btn" onClick={() => navigate('/')}>← Back to the Ocean</button>
+          </div>
         </header>
         <div className="projects-grid">
           {PROJECTS.map(p => (

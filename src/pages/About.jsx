@@ -5,8 +5,8 @@ export default function About() {
 
   return (
     <div className="ocean-page ocean-page--center">
+      <h1 className="page-title">Author&rsquo;s Note</h1>
       <div className="parchment-card">
-        <div className="parchment-deco">📦</div>
         <p className="parchment-text">
           Hi! I&apos;m{' '}
           <strong className="parchment-name">Nikitha Kishore Avadootha</strong>, a Computer
@@ -16,7 +16,7 @@ export default function About() {
         </p>
         <p className="parchment-text">
           When I&apos;m not coding, you&apos;ll find me drawing (yes, I drew all the
-          creatures in this aquarium!), exploring new ideas, and finding ways to make
+          creatures in this ocean!), exploring new ideas, and finding ways to make
           technology more human.
         </p>
         <p className="parchment-text parchment-text--closing">

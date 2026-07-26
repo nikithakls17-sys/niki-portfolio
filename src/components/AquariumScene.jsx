@@ -77,97 +77,6 @@ const CORAL_MID = [
   },
 ]
 
-// Near coral — colorful front-layer formations
-const CORAL_NEAR = [
-  // Far-left orange-red cluster
-  {
-    color: '#c24e2c',
-    d: `M 0,900 C 0,876 14,852 34,832 C 54,812 74,792 96,775
-        C 118,758 134,743 148,760 C 162,777 172,796 188,818
-        C 204,840 214,862 226,880 L 246,900 Z`,
-  },
-  // Left dark-rose coral
-  {
-    color: '#9e2646',
-    d: `M 165,900 C 174,880 186,860 206,840 C 226,820 248,800 264,786
-        C 280,772 294,760 304,775 C 314,790 318,812 322,834
-        L 338,900 Z`,
-  },
-  // Left-center purple coral
-  {
-    color: '#6c2e9e',
-    d: `M 294,900 L 314,866 C 330,846 350,826 370,810
-        C 390,794 407,783 420,797 C 433,811 440,832 446,854
-        L 464,900 Z`,
-  },
-  // Center-left warm pink
-  {
-    color: '#cc4678',
-    d: `M 424,900 L 450,860 C 466,840 488,818 514,804
-        C 540,790 559,778 574,792 C 589,806 594,830 600,852
-        L 618,900 Z`,
-  },
-  // Center golden-amber coral
-  {
-    color: '#be7624',
-    d: `M 566,900 L 588,866 C 608,844 630,822 654,810
-        C 678,798 698,788 714,801 C 730,814 735,835 740,858
-        L 756,900 Z`,
-  },
-  // Center rose coral (tallest, focal point)
-  {
-    color: '#b42e5e',
-    d: `M 714,900 L 736,858 C 756,836 780,814 808,801
-        C 836,788 856,778 872,791 C 888,804 892,828 898,852
-        L 916,900 Z`,
-  },
-  // Right-center orange coral
-  {
-    color: '#cc5626',
-    d: `M 866,900 L 890,858 C 912,836 936,812 962,798
-        C 988,784 1008,776 1024,790 C 1040,804 1044,828 1050,852
-        L 1068,900 Z`,
-  },
-  // Right purple-violet coral
-  {
-    color: '#64269e',
-    d: `M 1018,900 L 1042,856 C 1064,832 1090,808 1118,795
-        C 1146,782 1166,774 1182,788 C 1198,802 1203,826 1208,850
-        L 1228,900 Z`,
-  },
-  // Right warm-pink cluster
-  {
-    color: '#be3668',
-    d: `M 1178,900 C 1183,880 1198,860 1218,840 C 1238,820 1260,802 1278,790
-        C 1296,778 1310,768 1322,782 C 1334,796 1338,818 1344,842
-        L 1360,900 Z`,
-  },
-  // Far-right orange
-  {
-    color: '#c45e2e',
-    d: `M 1312,900 C 1318,876 1336,856 1360,838 C 1384,820 1408,804 1428,796
-        C 1440,791 1440,800 1440,820 L 1440,900 Z`,
-  },
-]
-
-// Left seaweed blades — wavy strokes anchored at y=900
-const SEAWEED_LEFT = [
-  { color: '#0c4e32', width: 7, d: 'M  45,900 C  32,870  58,845  40,818 C  22,791  50,765  33,738 C  16,711  44,686  28,660 C  12,634  38,610  22,588' },
-  { color: '#0a4830', width: 6, d: 'M  88,900 C  78,872 100,848  86,820 C  72,792  96,768  80,742 C  64,716  90,692  74,668 C  58,644  82,622  66,600' },
-  { color: '#105e3e', width: 7, d: 'M 138,900 C 128,878 152,855 136,830 C 120,805 145,782 128,758 C 111,734 138,712 120,688 C 102,664 128,645 112,625' },
-  { color: '#0c5434', width: 5, d: 'M 182,900 C 172,880 192,860 178,838 C 164,816 186,796 172,774 C 158,752 176,734 164,714 C 152,694 170,678 158,660' },
-  { color: '#0a4830', width: 5, d: 'M 224,900 C 216,882 230,862 218,842 C 206,822 224,804 212,784 C 200,764 216,748 206,730' },
-]
-
-// Right seaweed blades — mirror of left side
-const SEAWEED_RIGHT = [
-  { color: '#0c4e32', width: 7, d: 'M 1395,900 C 1408,870 1382,845 1400,818 C 1418,791 1390,765 1407,738 C 1424,711 1396,686 1412,660 C 1428,634 1402,610 1418,588' },
-  { color: '#105e3e', width: 6, d: 'M 1352,900 C 1362,872 1340,848 1354,820 C 1368,792 1344,768 1360,742 C 1376,716 1350,692 1366,668 C 1382,644 1358,622 1374,600' },
-  { color: '#0a4830', width: 7, d: 'M 1302,900 C 1312,878 1288,855 1304,830 C 1320,805 1295,782 1312,758 C 1329,734 1302,712 1320,688 C 1338,664 1312,645 1328,625' },
-  { color: '#0c5434', width: 5, d: 'M 1258,900 C 1268,880 1248,860 1262,838 C 1276,816 1254,796 1268,774 C 1282,752 1264,734 1276,714 C 1288,694 1270,678 1282,660' },
-  { color: '#0a4830', width: 5, d: 'M 1216,900 C 1224,882 1210,862 1222,842 C 1234,822 1216,804 1228,784 C 1240,764 1224,748 1234,730' },
-]
-
 // Remaining emoji-placeholder creatures
 const CREATURES = [
   { id: 'seahorse', label: 'Connect', icon: '🌿', x: '84%', y: '50%' },
@@ -178,7 +87,6 @@ const CREATURES = [
 export default function AquariumScene({ onCreatureClick }) {
   const navigate = useNavigate()
   const godRayRef    = useRef(null)
-  const seaweedRefs  = useRef([])
   const bubbleRefs   = useRef([])
   const creatureRefs = useRef([])
   const fishRefs      = useRef([])
@@ -261,20 +169,6 @@ export default function AquariumScene({ onCreatureClick }) {
         { opacity: 0.42 },
         { opacity: 0.78, duration: 4.5, ease: 'sine.inOut', yoyo: true, repeat: -1 }
       )
-
-      // Seaweed — sway from base, alternating direction
-      seaweedRefs.current.forEach((el, i) => {
-        if (!el) return
-        const sign = i % 2 === 0 ? 1 : -1
-        gsap.to(el, {
-          rotation: sign * (3.5 + (i % 3) * 0.8),
-          transformOrigin: '50% 100%',
-          duration: 2.0 + i * 0.22,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        })
-      })
 
       // Creatures — gentle idle float
       creatureRefs.current.forEach((el, i) => {
@@ -375,36 +269,6 @@ export default function AquariumScene({ onCreatureClick }) {
           <path key={i} d={c.d} fill={c.color} />
         ))}
 
-        {/* Near coral layer */}
-        {CORAL_NEAR.map((c, i) => (
-          <path key={i} d={c.d} fill={c.color} />
-        ))}
-
-        {/* Left seaweed */}
-        {SEAWEED_LEFT.map((sw, i) => (
-          <g key={`sl-${i}`} ref={el => { seaweedRefs.current[i] = el }} className={seaweedGlowing ? 'seaweed-glow' : ''}>
-            <path
-              d={sw.d}
-              stroke={seaweedGlowing ? '#2ecc71' : sw.color}
-              strokeWidth={sw.width}
-              strokeLinecap="round"
-              fill="none"
-            />
-          </g>
-        ))}
-
-        {/* Right seaweed */}
-        {SEAWEED_RIGHT.map((sw, i) => (
-          <g key={`sr-${i}`} ref={el => { seaweedRefs.current[SEAWEED_LEFT.length + i] = el }}>
-            <path
-              d={sw.d}
-              stroke={sw.color}
-              strokeWidth={sw.width}
-              strokeLinecap="round"
-              fill="none"
-            />
-          </g>
-        ))}
       </svg>
 
       {/* ── Background fish — swim RTL, crossfade to heart on hover/click ── */}
