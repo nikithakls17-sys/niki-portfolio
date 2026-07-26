@@ -670,18 +670,13 @@
   overflow-y: auto;
 }
 
-.ocean-page--center {
-  justify-content: center;
-}
-
-/* scrollable page shell with right gutter for SideNav */
 .content-shell {
   width: 100%;
   max-width: 1080px;
-  padding: 52px 110px 80px 52px;
+  padding: 36px 48px 40px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
 }
 
 .content-header {
@@ -699,17 +694,10 @@
   flex-wrap: wrap;
 }
 
-.page-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
 .page-title {
-  font-size: 3rem;
+  font-size: 2.1rem;
   font-weight: 200;
-  letter-spacing: 6px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: rgba(180, 235, 255, 0.92);
   text-shadow:
@@ -729,19 +717,19 @@
 /* ── Project cards ────────────────────────────── */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
   width: 100%;
 }
 
 .project-card {
   background: rgba(6, 22, 40, 0.72);
   border: 1px solid rgba(60, 160, 220, 0.2);
-  border-radius: 16px;
-  padding: 26px;
+  border-radius: 14px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
@@ -761,8 +749,8 @@
 }
 
 .project-card__desc {
-  font-size: 0.875rem;
-  line-height: 1.65;
+  font-size: 0.82rem;
+  line-height: 1.5;
   color: rgba(150, 210, 240, 0.75);
   margin: 0;
   flex: 1;
@@ -791,7 +779,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 18px;
+  padding: 6px 14px;
   border-radius: 20px;
   background: rgba(80, 180, 255, 0.1);
   border: 1px solid rgba(80, 180, 255, 0.32);
@@ -813,29 +801,29 @@
 .skills-container {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 20px;
   width: 100%;
 }
 
 .skill-group__label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin: 0 0 14px;
+  margin: 0 0 10px;
 }
 
 .skill-group__pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .skill-pill {
   display: inline-block;
-  padding: 6px 18px;
+  padding: 5px 14px;
   border-radius: 40px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.3px;
   border: 1px solid;
@@ -853,28 +841,27 @@
   background: rgba(10, 28, 38, 0.78);
   border: 1px solid rgba(200, 160, 90, 0.3);
   border-radius: 16px;
-  padding: 48px 52px;
+  padding: 32px 36px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow:
     0 0 40px rgba(200, 160, 60, 0.1),
     inset 0 0 30px rgba(200, 170, 100, 0.05);
-  font-family: 'Caveat', cursive;
-  margin: 40px 0;
+  margin: 0 auto;
 }
 
 .parchment-text {
-  font-size: 1.25rem;
-  line-height: 1.75;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: rgba(230, 218, 195, 0.92);
   margin: 0;
 }
 
 .parchment-text--closing {
-  font-size: 1.15rem;
+  font-size: 0.9rem;
   color: rgba(255, 210, 150, 0.85);
   font-style: italic;
 }
@@ -897,13 +884,13 @@
 }
 
 .parchment-uni {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: rgba(255, 225, 180, 0.95);
 }
 
 .parchment-major {
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   color: rgba(210, 190, 165, 0.75);
 }
 
@@ -915,9 +902,9 @@
 
 .parchment-link {
   display: inline-block;
-  padding: 7px 22px;
+  padding: 6px 18px;
   border-radius: 20px;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
   letter-spacing: 0.3px;
@@ -939,13 +926,6 @@
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: rgba(225, 220, 210, 0.9);
-}
-
-.parchment-back {
-  align-self: center;
-  margin-top: 4px;
-  font-family: inherit;
-  font-size: 1rem;
 }
 
 /* ── Section overlay ──────────────────────────── */

@@ -33,6 +33,25 @@ const GOD_RAYS = [
   { points: '720,-80 1310,950 1530,950',  opacity: 0.036 },
 ]
 
+// Distant reef — hazy, low-contrast mounds fading into the water for depth
+const CORAL_DISTANT = [
+  {
+    color: '#0e3350',
+    d: `M 0,900 L 0,846 Q 90,828 170,838 Q 260,848 320,824
+        Q 400,796 470,816 Q 540,834 610,812 L 610,900 Z`,
+  },
+  {
+    color: '#123a58',
+    d: `M 560,900 L 560,820 Q 640,792 720,810 Q 800,826 880,800
+        Q 950,778 1020,802 L 1020,900 Z`,
+  },
+  {
+    color: '#0e3350',
+    d: `M 980,900 L 980,824 Q 1060,800 1150,820 Q 1240,838 1320,814
+        Q 1390,792 1440,810 L 1440,900 Z`,
+  },
+]
+
 // Far coral — full-width base silhouette, darkest layer
 const CORAL_FAR = `
   M 0,900 L 0,836
@@ -245,6 +264,11 @@ export default function AquariumScene({ onCreatureClick }) {
             <stop offset="0%"   stopColor="#6ed8f8" stopOpacity="0.20" />
             <stop offset="100%" stopColor="#6ed8f8" stopOpacity="0"    />
           </radialGradient>
+          <radialGradient id="floorGlow" cx="50%" cy="100%" r="70%">
+            <stop offset="0%"   stopColor="#1a5570" stopOpacity="0.22" />
+            <stop offset="55%"  stopColor="#0d3a52" stopOpacity="0.10" />
+            <stop offset="100%" stopColor="#0d3a52" stopOpacity="0"    />
+          </radialGradient>
         </defs>
 
         {/* Diffuse surface light */}
@@ -260,6 +284,14 @@ export default function AquariumScene({ onCreatureClick }) {
             />
           ))}
         </g>
+
+        {/* Distant reef — hazy silhouettes for depth */}
+        {CORAL_DISTANT.map((c, i) => (
+          <path key={i} d={c.d} fill={c.color} opacity={0.55} />
+        ))}
+
+        {/* Ambient light pooling on the ocean floor */}
+        <ellipse cx="720" cy="920" rx="820" ry="140" fill="url(#floorGlow)" />
 
         {/* Far coral layer */}
         <path d={CORAL_FAR} fill="#06131e" />

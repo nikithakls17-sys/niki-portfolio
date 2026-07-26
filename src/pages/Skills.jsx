@@ -4,27 +4,22 @@ const SKILL_GROUPS = [
   {
     label: 'Languages',
     color: '#64d8f8',
-    skills: ['Python', 'Java', 'JavaScript', 'TypeScript', 'SQL'],
+    skills: ['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL', 'C#', 'C', 'C++', 'HTML', 'CSS'],
   },
   {
-    label: 'Frameworks',
-    color: '#b88af8',
-    skills: ['React', 'Next.js', 'Vite', 'FastAPI', 'Spring Boot'],
-  },
-  {
-    label: 'AI / ML',
+    label: 'AI & Data',
     color: '#f880c0',
-    skills: ['OpenAI API', 'MediaPipe', 'KNN Classifier', 'MCP Protocol', 'OpenAI Agents'],
+    skills: ['OpenAI Agents SDK', 'Cohere API', 'RAG Pipelines', 'Model Context Protocol', 'LLM Tool-Calling', 'Power BI', 'Tableau', 'pandas', 'ETL'],
   },
   {
-    label: 'Tools',
+    label: 'Web & APIs',
+    color: '#b88af8',
+    skills: ['React', 'Next.js', 'FastAPI', 'Spring Boot', 'REST APIs', 'Node.js', 'Microservices', 'OOP/OOD'],
+  },
+  {
+    label: 'Cloud & Tools',
     color: '#7de8b0',
-    skills: ['Git', 'GitHub', 'VS Code', 'IntelliJ IDEA', 'SQLite', 'H2'],
-  },
-  {
-    label: 'Other',
-    color: '#f8c860',
-    skills: ['REST APIs', 'Full Stack Development', 'Session Management'],
+    skills: ['AWS Concepts', 'Azure (Learning)', 'Git/GitHub', 'CI/CD', 'MySQL', 'PostgreSQL', 'SQLite', 'MongoDB', 'Agile/Scrum'],
   },
 ]
 
