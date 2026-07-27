@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import useSound from 'use-sound'
-import { useSoundCtx } from '../../contexts/SoundContext'
+import { useSoundCtx } from '../../contexts/useSoundCtx'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -16,7 +16,7 @@ export default function Turtle({ style }) {
   const navigate    = useNavigate()
   const { isSfxMuted } = useSoundCtx()
 
-  const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
+  const [playHover] = useSound(`${BASE}sounds/chime.mp3`, { volume: 0.5, interrupt: true })
 
   function startInterval() {
     intervalRef.current = setInterval(() => setFrame(f => (f === 1 ? 2 : 1)), 1200)
@@ -85,7 +85,9 @@ export default function Turtle({ style }) {
       role="button"
       aria-label="Go to Certificates"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && handleClick()}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick() }
+      }}
     >
       <div ref={animRef} className="turtle-anim">
         <span className={`creature-tooltip turtle-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>

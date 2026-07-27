@@ -66,7 +66,7 @@ export default function Projects() {
   const navigate = useNavigate()
 
   return (
-    <div className="ocean-page ocean-page--scroll">
+    <div className="ocean-page">
       <div className="content-shell">
         <header className="content-header">
           <h1 className="page-title">Projects</h1>

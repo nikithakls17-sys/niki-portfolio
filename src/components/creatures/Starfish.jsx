@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import useSound from 'use-sound'
-import { useSoundCtx } from '../../contexts/SoundContext'
+import { useSoundCtx } from '../../contexts/useSoundCtx'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -15,8 +15,8 @@ export default function Starfish({ style }) {
   const clickedRef = useRef(false)
   const { isSfxMuted } = useSoundCtx()
 
-  const [playHover] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.5, interrupt: true })
-  const [playClick] = useSound(`${BASE}sounds/chime.wav`, { volume: 0.8, interrupt: true })
+  const [playHover] = useSound(`${BASE}sounds/chime.mp3`, { volume: 0.5, interrupt: true })
+  const [playClick] = useSound(`${BASE}sounds/chime.mp3`, { volume: 0.8, interrupt: true })
 
   // 3-frame flipbook every 800ms
   useEffect(() => {
@@ -68,7 +68,9 @@ export default function Starfish({ style }) {
       role="button"
       aria-label="Go to Skills"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && handleClick()}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick() }
+      }}
     >
       <div ref={animRef} className="star-anim">
         <span className={`creature-tooltip star-tooltip${hovered ? ' creature-tooltip--visible' : ''}`}>

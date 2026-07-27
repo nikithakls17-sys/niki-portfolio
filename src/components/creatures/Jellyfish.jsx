@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import useSound from 'use-sound'
-import { useSoundCtx } from '../../contexts/SoundContext'
+import { useSoundCtx } from '../../contexts/useSoundCtx'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -15,8 +15,8 @@ export default function Jellyfish({ style }) {
   const clickedRef = useRef(false)
   const { isSfxMuted } = useSoundCtx()
 
-  const [playHover] = useSound(`${BASE}sounds/bubble small.wav`, { volume: 0.5, interrupt: true })
-  const [playClick] = useSound(`${BASE}sounds/bubble long.wav`,  { volume: 0.7, interrupt: true })
+  const [playHover] = useSound(`${BASE}sounds/bubble small.mp3`, { volume: 0.5, interrupt: true })
+  const [playClick] = useSound(`${BASE}sounds/bubble long.mp3`,  { volume: 0.7, interrupt: true })
 
   // 3-frame flipbook every 600ms
   useEffect(() => {
@@ -64,7 +64,9 @@ export default function Jellyfish({ style }) {
       role="button"
       aria-label="Go to Projects"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && handleClick()}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick() }
+      }}
     >
       <div ref={animRef} className="jelly-anim">
         <span className={`jelly-tooltip${hovered ? ' jelly-tooltip--visible' : ''}`}>Projects</span>

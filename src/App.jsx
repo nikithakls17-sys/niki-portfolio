@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { SoundProvider } from './contexts/SoundContext'
+import { useSoundCtx } from './contexts/useSoundCtx'
 import AquariumScene from './components/AquariumScene'
 import HamburgerMenu from './components/HamburgerMenu'
 import Projects from './pages/Projects'
@@ -10,37 +11,33 @@ import Certificates from './pages/Certificates'
 import Hobbies from './pages/Hobbies'
 import './App.css'
 
-function Home() {
-  const [activeSection, setActiveSection] = useState(null)
+// Ambient music only plays on the home scene — stop it everywhere else
+function AmbientRouteSync() {
+  const { pathname } = useLocation()
+  const { setHomeActive } = useSoundCtx()
 
-  return (
-    <>
-      <AquariumScene onCreatureClick={setActiveSection} />
-      {activeSection && (
-        <div className="section-overlay">
-          <button className="back-btn" onClick={() => setActiveSection(null)}>
-            ← Back to the Ocean
-          </button>
-        </div>
-      )}
-    </>
-  )
+  useEffect(() => {
+    setHomeActive(pathname === '/')
+  }, [pathname, setHomeActive])
+
+  return null
 }
 
 export default function App() {
   return (
-    <SoundProvider>
-      <HashRouter>
+    <HashRouter>
+      <SoundProvider>
+        <AmbientRouteSync />
         <HamburgerMenu />
         <Routes>
-          <Route path="/"             element={<Home />}         />
+          <Route path="/"             element={<AquariumScene />} />
           <Route path="/projects"     element={<Projects />}     />
           <Route path="/skills"       element={<Skills />}       />
           <Route path="/about"        element={<About />}        />
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/hobbies"      element={<Hobbies />}      />
         </Routes>
-      </HashRouter>
-    </SoundProvider>
+      </SoundProvider>
+    </HashRouter>
   )
 }

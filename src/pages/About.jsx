@@ -4,7 +4,7 @@ export default function About() {
   const navigate = useNavigate()
 
   return (
-    <div className="ocean-page ocean-page--scroll">
+    <div className="ocean-page">
       <div className="content-shell">
         <header className="content-header">
           <h1 className="page-title">Author&rsquo;s Note</h1>

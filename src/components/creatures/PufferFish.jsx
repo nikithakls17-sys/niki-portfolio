@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import useSound from 'use-sound'
-import { useSoundCtx } from '../../contexts/SoundContext'
+import { useSoundCtx } from '../../contexts/useSoundCtx'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -19,7 +19,7 @@ export default function PufferFish({ style }) {
   const navigate    = useNavigate()
   const { isSfxMuted } = useSoundCtx()
 
-  const [playHover] = useSound(`${BASE}sounds/bubble deep.wav`, { volume: 0.6, interrupt: true })
+  const [playHover] = useSound(`${BASE}sounds/bubble deep.mp3`, { volume: 0.6, interrupt: true })
 
   function startInterval() {
     let growing = true
@@ -91,7 +91,9 @@ export default function PufferFish({ style }) {
       role="button"
       aria-label="Go to Hobbies"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && handleClick()}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick() }
+      }}
     >
       <span className={`creature-tooltip puffer-tooltip${isPuffed ? ' creature-tooltip--visible' : ''}`}>
         Hobbies

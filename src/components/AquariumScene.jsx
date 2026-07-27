@@ -7,7 +7,7 @@ import TreasureChest from './creatures/TreasureChest'
 import Starfish from './creatures/Starfish'
 import PufferFish from './creatures/PufferFish'
 import Turtle from './creatures/Turtle'
-import { useSoundCtx } from '../contexts/SoundContext'
+import { useSoundCtx } from '../contexts/useSoundCtx'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -96,60 +96,21 @@ const CORAL_MID = [
   },
 ]
 
-// Remaining emoji-placeholder creatures
-const CREATURES = [
-  { id: 'seahorse', label: 'Connect', icon: '🌿', x: '84%', y: '50%' },
-]
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function AquariumScene({ onCreatureClick }) {
+export default function AquariumScene() {
   const navigate = useNavigate()
   const godRayRef    = useRef(null)
   const bubbleRefs   = useRef([])
-  const creatureRefs = useRef([])
   const fishRefs      = useRef([])
   const fishTweens    = useRef([])
   const heartTimer    = useRef(null)
   const [heartFish, setHeartFish] = useState(null)
   const [seaweedGlowing, setSeaweedGlowing] = useState(false)
 
-  const { isMusicMuted, isSfxMuted } = useSoundCtx()
-  const ambientStarted = useRef(false)
-  const ambientPlaying = useRef(false)
+  const { isSfxMuted } = useSoundCtx()
 
-  const [playAmbient, { stop: stopAmbient }] = useSound(
-    `${BASE}sounds/underwater background.mp3`,
-    { loop: true, volume: 0.3, interrupt: false },
-  )
-  const [playCartoonBubble] = useSound(`${BASE}sounds/cartoon bubble.wav`, { volume: 0.6, interrupt: true })
-
-  // Start ambient on first user interaction
-  useEffect(() => {
-    function onFirstInteraction() {
-      if (ambientStarted.current) return
-      ambientStarted.current = true
-      if (!isMusicMuted) {
-        playAmbient()
-        ambientPlaying.current = true
-      }
-      document.removeEventListener('click', onFirstInteraction)
-    }
-    document.addEventListener('click', onFirstInteraction)
-    return () => document.removeEventListener('click', onFirstInteraction)
-  }, [playAmbient, isMusicMuted])
-
-  // Stop/resume ambient when music mute toggles
-  useEffect(() => {
-    if (!ambientStarted.current) return
-    if (!isMusicMuted && !ambientPlaying.current) {
-      playAmbient()
-      ambientPlaying.current = true
-    } else if (isMusicMuted && ambientPlaying.current) {
-      stopAmbient()
-      ambientPlaying.current = false
-    }
-  }, [isMusicMuted, playAmbient, stopAmbient])
+  const [playCartoonBubble] = useSound(`${BASE}sounds/cartoon bubble.mp3`, { volume: 0.6, interrupt: true })
 
   function showHeart(i) {
     clearTimeout(heartTimer.current)
@@ -188,18 +149,6 @@ export default function AquariumScene({ onCreatureClick }) {
         { opacity: 0.42 },
         { opacity: 0.78, duration: 4.5, ease: 'sine.inOut', yoyo: true, repeat: -1 }
       )
-
-      // Creatures — gentle idle float
-      creatureRefs.current.forEach((el, i) => {
-        if (!el) return
-        gsap.to(el, {
-          y: 9 + (i % 3) * 4,
-          duration: 2.4 + i * 0.38,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        })
-      })
 
       // Bubbles — rise from random bottom positions, staggered start
       bubbleRefs.current.forEach((el) => {
@@ -363,20 +312,6 @@ export default function AquariumScene({ onCreatureClick }) {
             Hobbies
           </span>
         </button>
-
-        {CREATURES.map((c, i) => (
-          <button
-            key={c.id}
-            ref={el => { creatureRefs.current[i] = el }}
-            className="creature-btn"
-            style={{ left: c.x, top: c.y }}
-            onClick={() => onCreatureClick?.(c.id)}
-            aria-label={`Go to ${c.label}`}
-          >
-            <span className="creature-icon">{c.icon}</span>
-            <span className="creature-label">{c.label}</span>
-          </button>
-        ))}
       </div>
     </div>
   )

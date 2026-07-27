@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import useSound from 'use-sound'
-import { useSoundCtx } from '../../contexts/SoundContext'
+import { useSoundCtx } from '../../contexts/useSoundCtx'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -14,8 +14,8 @@ export default function TreasureChest({ style }) {
   const clickedRef = useRef(false)
   const { isSfxMuted } = useSoundCtx()
 
-  const [playHover] = useSound(`${BASE}sounds/treasure.wav`, { volume: 0.7, interrupt: true })
-  const [playClick] = useSound(`${BASE}sounds/treasure.wav`, { volume: 1.0, interrupt: true })
+  const [playHover] = useSound(`${BASE}sounds/treasure.mp3`, { volume: 0.7, interrupt: true })
+  const [playClick] = useSound(`${BASE}sounds/treasure.mp3`, { volume: 1.0, interrupt: true })
 
   // gentle bob
   useEffect(() => {
@@ -57,7 +57,9 @@ export default function TreasureChest({ style }) {
       role="button"
       aria-label="Go to Author's Note"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && handleClick()}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick() }
+      }}
     >
       <div ref={animRef} className="treasure-anim">
         <span className={`creature-tooltip treasure-tooltip${open ? ' creature-tooltip--visible' : ''}`}>

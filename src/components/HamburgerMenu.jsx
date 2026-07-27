@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
-import { useSoundCtx } from '../contexts/SoundContext'
+import { useSoundCtx } from '../contexts/useSoundCtx'
 
 const GUIDE = [
   { icon: '🪼', name: 'Jellyfish',    path: '/projects',     section: 'Projects'      },
