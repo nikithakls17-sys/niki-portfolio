@@ -45,7 +45,7 @@ No test suite is configured.
 niki-portfolio/
 ├── public/
 │   ├── creatures/          # all creature & fish PNG sprites
-│   ├── sounds/             # all .wav and .mp3 audio files
+│   ├── sounds/             # all audio files (mp3)
 │   ├── favicon.svg
 │   └── icons.svg
 ├── src/
@@ -57,10 +57,11 @@ niki-portfolio/
 │   │   │   ├── Turtle.jsx
 │   │   │   └── PufferFish.jsx
 │   │   ├── AquariumScene.jsx   # home screen: SVG scene + creature layout
-│   │   ├── HamburgerMenu.jsx   # fixed right-side panel (persists all routes)
-│   │   └── SideNav.jsx         # icon nav used on content pages
+│   │   └── HamburgerMenu.jsx   # fixed right-side panel (persists all routes)
 │   ├── contexts/
-│   │   └── SoundContext.jsx    # global music/SFX/volume state
+│   │   ├── SoundContext.jsx    # SoundProvider — owns the ambient Howl instance + mute/volume state
+│   │   ├── sound-context.js    # the createContext() object (kept separate for react-refresh)
+│   │   └── useSoundCtx.js      # useSoundCtx() hook (kept separate for react-refresh)
 │   ├── pages/
 │   │   ├── Projects.jsx
 │   │   ├── Skills.jsx
@@ -107,8 +108,8 @@ All creatures follow the same structural pattern:
 - **Click exit:** kills idle tweens, flies `posRef` up `-(window.innerHeight + 300)px`, 1.1s, `power2.in`, then navigates
 
 **Sounds:**
-- Hover: `bubble small.wav` at vol 0.5
-- Click: `bubble long.wav` at vol 0.7
+- Hover: `bubble small.mp3` at vol 0.5
+- Click: `bubble long.mp3` at vol 0.7
 
 **Tooltip color:** `rgba(220, 190, 255, 0.95)` (purple)
 **Hover glow:** `drop-shadow(0 0 22px rgba(200, 140, 255, 0.9))`
@@ -133,8 +134,8 @@ All creatures follow the same structural pattern:
 - **Click exit:** kills idle tweens, spins 360° + flies `posRef` up `-(window.innerHeight + 200)px`, 1.0s, `power2.in`, then navigates
 
 **Sounds:**
-- Hover: `chime.wav` at vol 0.5
-- Click: `chime.wav` at vol 0.8
+- Hover: `chime.mp3` at vol 0.5
+- Click: `chime.mp3` at vol 0.8
 
 **Tooltip color:** `rgba(255, 200, 140, 0.95)` (orange)
 **Hover glow:** `drop-shadow(0 0 20px rgba(255, 160, 60, 0.9))`
@@ -158,8 +159,8 @@ All creatures follow the same structural pattern:
 - No fly-off — chest stays in place and pulses
 
 **Sounds:**
-- Hover: `treasure.wav` at vol 0.7
-- Click: `treasure.wav` at vol 1.0
+- Hover: `treasure.mp3` at vol 0.7
+- Click: `treasure.mp3` at vol 1.0
 
 **Tooltip color:** `rgba(255, 218, 140, 0.95)` (gold)
 **Hover glow:** `drop-shadow(0 0 22px rgba(255, 200, 60, 0.9))`
@@ -185,7 +186,7 @@ All creatures follow the same structural pattern:
 - **Click exit:** pulses `posRef` scale 1.0 → 1.2 → 1.0, 0.15s yoyo repeat 1, then navigates
 
 **Sounds:**
-- Hover: `chime.wav` at vol 0.5
+- Hover: `chime.mp3` at vol 0.5
 - Click: no sound
 
 **Tooltip color:** `rgba(160, 255, 200, 0.95)` (green)
@@ -216,7 +217,7 @@ All creatures follow the same structural pattern:
 - **Click exit:** sets frame 1 + puffed, navigates after 400ms timeout (no GSAP exit)
 
 **Sounds:**
-- Hover: `bubble deep.wav` at vol 0.6
+- Hover: `bubble deep.mp3` at vol 0.6
 - Click: no sound
 
 **Tooltip color:** `rgba(255, 220, 130, 0.95)` (golden)
@@ -259,48 +260,52 @@ All creature `position` divs use `transform: translate(-50%, -50%)` via CSS so `
 
 ## Sound System
 
-**Context file:** `src/contexts/SoundContext.jsx`
+**Files:** `src/contexts/SoundContext.jsx` (provider), `sound-context.js` (the `createContext()` object), `useSoundCtx.js` (the hook). Split across three files instead of one because `react-refresh/only-export-components` fails lint if a component file also exports a context object or a hook.
 
-**Provider:** `<SoundProvider>` wraps the entire app in `App.jsx`. Uses `Howler.volume(volume)` to sync global volume.
+**Provider:** `<SoundProvider>` wraps the app inside `HashRouter` in `App.jsx` (needs to be inside the router so a sibling route-watcher component can call `useLocation()`).
+
+**Ambient music ownership:** unlike SFX, the ambient track is **not** played via `use-sound`. `SoundProvider` creates a single persistent `Howl` instance directly (via `howler`) that lives for the app's lifetime — not tied to `AquariumScene` mounting/unmounting. This is required because the ambient track must stop when navigating away from `/` or when the browser tab is hidden, and both of those can happen while `AquariumScene` itself is unmounted.
 
 **Context shape:**
 ```js
 {
   isMusicMuted: boolean,   // controls ambient background music
   isSfxMuted:   boolean,   // controls all creature SFX
-  volume:       number,    // 0–1, applied globally via Howler
+  volume:       number,    // 0–1, applied globally via Howler.volume()
   toggleMusic:  () => void,
   toggleSfx:    () => void,
   setVolume:    (n) => void,
+  setHomeActive: (active: boolean) => void,  // called by AmbientRouteSync in App.jsx
 }
 ```
 
-**Ambient music:** `underwater background.mp3`, vol 0.3, loop. Starts on first user click to satisfy browser autoplay policy. Managed in `AquariumScene.jsx` with `ambientStarted` and `ambientPlaying` refs.
+**Ambient music:** `underwater background.mp3`, vol 0.3, loop. Plays only when all of these are true (checked in `SoundProvider`'s internal `syncAmbient()`): the user has clicked anywhere at least once (autoplay-policy gate), the current route is `/` (set via `setHomeActive` from `AmbientRouteSync` in `App.jsx`, which calls `useLocation()`), the tab is visible (`document.visibilitychange`), and `isMusicMuted` is false. State is tracked in a `stateRef` (not React state) so the `visibilitychange`/first-click listeners — registered once — never read a stale closure.
 
 **SFX pattern in every creature:**
 ```js
 const { isSfxMuted } = useSoundCtx()
-const [playHover] = useSound(`${BASE}sounds/file.wav`, { volume: 0.5, interrupt: true })
+const [playHover] = useSound(`${BASE}sounds/file.mp3`, { volume: 0.5, interrupt: true })
 // in handler:
 if (!isSfxMuted) playHover()
 ```
+SFX still use `use-sound` per-component since they're short, home-page-only, and naturally stop existing when their creature unmounts.
 
 **Sound file → usage map:**
 
 | File | Used by | Event | Volume |
 |---|---|---|---|
-| `underwater background.mp3` | AquariumScene | ambient loop | 0.3 |
-| `bubble small.wav` | Jellyfish | hover | 0.5 |
-| `bubble long.wav` | Jellyfish | click | 0.7 |
-| `bubble deep.wav` | PufferFish | hover | 0.6 |
-| `chime.wav` | Starfish | hover | 0.5 |
-| `chime.wav` | Starfish | click | 0.8 |
-| `chime.wav` | Turtle | hover | 0.5 |
-| `treasure.wav` | TreasureChest | hover | 0.7 |
-| `treasure.wav` | TreasureChest | click | 1.0 |
-| `cartoon bubble.wav` | fish school groups | hover/click | — |
+| `underwater background.mp3` | SoundContext | ambient loop | 0.3 |
+| `bubble small.mp3` | Jellyfish | hover | 0.5 |
+| `bubble long.mp3` | Jellyfish | click | 0.7 |
+| `bubble deep.mp3` | PufferFish | hover | 0.6 |
+| `chime.mp3` | Starfish | hover | 0.5 |
+| `chime.mp3` | Starfish | click | 0.8 |
+| `chime.mp3` | Turtle | hover | 0.5 |
+| `treasure.mp3` | TreasureChest | hover | 0.7 |
+| `treasure.mp3` | TreasureChest | click | 1.0 |
+| `cartoon bubble.mp3` | fish school groups | hover/click | — |
 
-The file `Underwater Sound Effects Library (1).mp3` in `public/sounds/` is unused.
+All SFX are mp3 (converted from WAV to cut load size ~90%). `howler` is a direct dependency in `package.json` (not just a transitive one through `use-sound`) since `SoundContext.jsx` imports it directly.
 
 ---
 
@@ -312,7 +317,7 @@ All `src` values for images and sounds must use `import.meta.env.BASE_URL`:
 const BASE = import.meta.env.BASE_URL
 // correct:
 src={`${BASE}creatures/jelly1.png`}
-src={`${BASE}sounds/bubble small.wav`}
+src={`${BASE}sounds/bubble small.mp3`}
 ```
 
 Omitting `BASE` breaks assets in production (GitHub Pages serves from `/niki-portfolio/` subdirectory, not `/`).
@@ -324,7 +329,7 @@ Omitting `BASE` breaks assets in production (GitHub Pages serves from `/niki-por
 `HashRouter` is required — GitHub Pages has no server-side routing support.
 
 ```
-/             → Home (AquariumScene)
+/             → AquariumScene (home scene)
 /projects     → Projects.jsx
 /skills       → Skills.jsx
 /about        → About.jsx
@@ -332,16 +337,16 @@ Omitting `BASE` breaks assets in production (GitHub Pages serves from `/niki-por
 /hobbies      → Hobbies.jsx
 ```
 
-`HamburgerMenu` sits outside `<Routes>` in `App.jsx` so it persists on every page.
+`HamburgerMenu` sits outside `<Routes>` (but inside `SoundProvider`) in `App.jsx` so it persists on every page. `AmbientRouteSync` is a sibling, invisible component that calls `setHomeActive(pathname === '/')` on every route change so the ambient track knows when to stop.
 
 ---
 
 ## Known Issues & Fixes
 
-- **Ambient music doesn't start automatically** — this is intentional, not a bug. Browser autoplay policy blocks audio before user interaction. Music starts on first click anywhere on the scene.
+- **Ambient music doesn't start automatically** — this is intentional, not a bug. Browser autoplay policy blocks audio before user interaction. Music starts on first click anywhere in the app (not just on the home scene), but only actually plays once the route is also `/`.
 - **PufferFish has no `posRef`** — unlike other creatures, PufferFish does not use a `posRef` for its click exit. It uses `setTimeout(() => navigate('/hobbies'), 400)` directly instead of a GSAP exit on an outer ref.
 - **TreasureChest has a custom transform** — it uses `transform: translateX(-50%)` in `style` instead of the full `translate(-50%, -50%)` that other creatures get from CSS. This is intentional for its bottom-seated placement.
-- **`Underwater Sound Effects Library (1).mp3`** in `public/sounds/` is an unused file (leftover asset).
+- **No mobile layout for the home scene** — content pages (Projects/Skills/etc.) reflow at `max-width: 900px`/`640px` breakpoints, but the home scene's creature *positions* are left untouched per the no-reposition rule below; only sprite widths shrink at `640px`. A real mobile redesign of the aquarium layout is a bigger, separate undertaking.
 
 ---
 
@@ -364,4 +369,4 @@ Omitting `BASE` breaks assets in production (GitHub Pages serves from `/niki-por
 3. Create `src/components/creatures/MyCreature.jsx` following the `posRef` / `animRef` / `clickedRef` pattern
 4. Add a `<Route>` in `App.jsx` and a page component in `src/pages/`
 5. Place the creature in `AquariumScene.jsx` inside `.creatures-layer`
-6. Update `HamburgerMenu.jsx` (add to `GUIDE` array and `QUICK_LINKS`) and `SideNav.jsx` (`NAV_ITEMS`)
+6. Update `HamburgerMenu.jsx` (add to `GUIDE` array and `QUICK_LINKS`)
